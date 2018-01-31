@@ -86,7 +86,7 @@ public class PortfolioActivity extends Activity {
         setContentView(R.layout.portfolio);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        //this.refreshView();
+        refreshView();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh(){
@@ -102,8 +102,6 @@ public class PortfolioActivity extends Activity {
 
             }
         });
-
-        //this.refreshView();
     }
 
     private void refreshView() {

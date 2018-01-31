@@ -27,6 +27,7 @@ package nitezh.ministock.activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -90,7 +91,14 @@ public class PortfolioActivity extends Activity {
             @Override
             public void onRefresh(){
                 swipeRefreshLayout.setRefreshing(true);
-                //refreshView();
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        //refreshView();
+                    }
+                },3000);
+
             }
         });
 

@@ -78,6 +78,7 @@ public class PortfolioActivity extends Activity {
                 storage,
                 widgetRepository
         );
+        this.portfolioRepository.updateStocksQuotes();
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         //this.refreshView();

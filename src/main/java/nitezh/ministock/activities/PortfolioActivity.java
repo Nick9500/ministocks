@@ -98,7 +98,7 @@ public class PortfolioActivity extends Activity {
                         swipeRefreshLayout.setRefreshing(false);
 
                     }
-                },3000);
+                },1000);
 
             }
         });

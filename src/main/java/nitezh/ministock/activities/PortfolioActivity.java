@@ -67,6 +67,8 @@ public class PortfolioActivity extends Activity {
     private ListView mPortfolioListView;
     private String mStockSymbol = "";
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,15 +82,18 @@ public class PortfolioActivity extends Activity {
         );
         this.portfolioRepository.updateStocksQuotes();
 
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        setContentView(R.layout.portfolio);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         //this.refreshView();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh(){
-                swipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(true);
                 //refreshView();
             }
         });
+
         this.refreshView();
     }
 

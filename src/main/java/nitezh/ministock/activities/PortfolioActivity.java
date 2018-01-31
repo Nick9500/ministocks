@@ -90,23 +90,23 @@ public class PortfolioActivity extends Activity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh(){
+                refreshView();
                 swipeRefreshLayout.setRefreshing(true);
                 (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
-                        //refreshView();
+
                     }
                 },3000);
 
             }
         });
 
-        this.refreshView();
+        //this.refreshView();
     }
 
     private void refreshView() {
-        setContentView(R.layout.portfolio);
 
         List<Map<String, String>> listViewData = this.portfolioRepository.getDisplayInfo();
         SimpleAdapter adapter = new SimpleAdapter(this, listViewData, R.layout.portfolio_list_item,

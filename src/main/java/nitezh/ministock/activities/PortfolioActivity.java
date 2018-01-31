@@ -31,6 +31,7 @@ import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -40,6 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,8 +79,15 @@ public class PortfolioActivity extends Activity {
                 widgetRepository
         );
 
-        this.portfolioRepository.updateStocksQuotes();
-
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        //this.refreshView();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh(){
+                swipeRefreshLayout.setRefreshing(false);
+                //refreshView();
+            }
+        });
         this.refreshView();
     }
 

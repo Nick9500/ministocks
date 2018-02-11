@@ -162,6 +162,7 @@
                 <action android:name="nitezh.ministock.WIDGET_BUTTON" />
             </intent-filter>
 
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_1x2" />

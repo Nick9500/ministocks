@@ -1,7 +1,7 @@
 package nitezh.ministock.utils;
 
 /**
- * Created by boli on 2018-02-11.
+ * Created by everlybolivar on 2018-02-11.
  */
 
 import android.app.AlarmManager;
@@ -17,6 +17,7 @@ import java.util.Date;
 import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
 import nitezh.ministock.utils.DateTools;
+
 
 public class RefreshButton {
 

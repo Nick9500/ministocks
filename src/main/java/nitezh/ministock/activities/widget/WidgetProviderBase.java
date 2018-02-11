@@ -142,7 +142,7 @@ public class WidgetProviderBase extends AppWidgetProvider {
 
     private UpdateType refreshUpdateType (Context context) {
         WidgetRepository repository = new AndroidWidgetRepository(context);
-        return UpdateType.VIEW_UPDATE;
+        return UpdateType.VIEW_CHANGE;
     }
 
     private void startPreferencesActivity(Context context, int appWidgetId) {

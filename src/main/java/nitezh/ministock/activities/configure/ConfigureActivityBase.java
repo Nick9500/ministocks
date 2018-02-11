@@ -33,6 +33,7 @@ import android.view.KeyEvent;
 import java.util.concurrent.Callable;
 
 import nitezh.ministock.DialogTools;
+import nitezh.ministock.R;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
 import nitezh.ministock.domain.AndroidWidgetRepository;
 import nitezh.ministock.domain.WidgetRepository;

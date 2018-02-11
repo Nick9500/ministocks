@@ -24,12 +24,15 @@
 
 package nitezh.ministock.activities.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -37,8 +40,10 @@ import java.util.concurrent.RejectedExecutionException;
 
 import nitezh.ministock.CustomAlarmManager;
 import nitezh.ministock.PreferenceStorage;
+import nitezh.ministock.R;
 import nitezh.ministock.Storage;
 import nitezh.ministock.domain.Widget;
+import nitezh.ministock.utils.RefreshButton;
 import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.UserData;
 import nitezh.ministock.activities.PreferencesActivity;
@@ -50,6 +55,7 @@ import nitezh.ministock.utils.DateTools;
 
 
 public class WidgetProviderBase extends AppWidgetProvider {
+
 
     private static void applyUpdate(Context context, int appWidgetId, UpdateType updateMode,
                                     HashMap<String, StockQuote> quotes, String quotesTimeStamp) {
@@ -134,6 +140,11 @@ public class WidgetProviderBase extends AppWidgetProvider {
         return UpdateType.VIEW_CHANGE;
     }
 
+    private UpdateType refreshUpdateType (Context context) {
+        WidgetRepository repository = new AndroidWidgetRepository(context);
+        return UpdateType.VIEW_UPDATE;
+    }
+
     private void startPreferencesActivity(Context context, int appWidgetId) {
         PreferencesActivity.mAppWidgetId = appWidgetId;
         Intent activity = new Intent(context, PreferencesActivity.class);
@@ -161,6 +172,9 @@ public class WidgetProviderBase extends AppWidgetProvider {
                                 AppWidgetManager.INVALID_APPWIDGET_ID);
                         handleTouch(context, appWidgetId, action);
                     }
+                    break;
+                case RefreshButton.WIDGET_BUTTON:
+                    updateWidgets(context, refreshUpdateType(context));
                     break;
 
                 default:

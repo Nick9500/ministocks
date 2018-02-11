@@ -158,6 +158,9 @@
             <intent-filter>
                 <action android:name="nitezh.ministock.ALARM_UPDATE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="nitezh.ministock.WIDGET_BUTTON" />
+            </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"

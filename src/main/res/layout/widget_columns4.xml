@@ -56,6 +56,12 @@
         android:paddingRight="14dp"
         android:paddingTop="12dp">
 
+        <Button
+            android:id="@+id/refbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh" />
+
         <LinearLayout
             android:id="@+id/line0"
             style="@style/StockLine"

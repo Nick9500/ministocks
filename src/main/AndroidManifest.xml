@@ -26,7 +26,7 @@
     package="nitezh.ministock"
     android:versionCode="73"
     android:versionName="73">
-
+    
     <uses-sdk android:minSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />

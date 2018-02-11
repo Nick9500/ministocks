@@ -30,6 +30,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -37,6 +39,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import nitezh.ministock.CustomAlarmManager;
 import nitezh.ministock.PreferenceStorage;
+import nitezh.ministock.R;
 import nitezh.ministock.Storage;
 import nitezh.ministock.domain.Widget;
 import nitezh.ministock.utils.StorageCache;

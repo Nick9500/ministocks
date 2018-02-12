@@ -16,11 +16,16 @@
         android:scaleType="fitXY"
         android:src="@drawable/ministock_bg_transparent68" />
     -->
+
+
+
+
     <LinearLayout
+        android:id="@+id/widget_left"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#00ffffff"
-        android:orientation="vertical">
+        android:orientation="vertical"/>
         <!--
         <TextView
             android:id="@+id/test_str"

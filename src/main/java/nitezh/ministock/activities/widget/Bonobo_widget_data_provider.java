@@ -10,13 +10,16 @@ import android.graphics.Color;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import nitezh.ministock.activities.MyData;
+import nitezh.ministock.domain.Widget;
+
 /**
  * Created by nicholasfong on 2018-02-09.
  */
 
 public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteViewsFactory {
     List mCollections = new ArrayList();
-
+    List<WidgetRow> mylist = new ArrayList();
     Context mContext = null;
 
     public Bonobo_widget_data_provider(Context context, Intent intent) {
@@ -42,8 +45,8 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     public RemoteViews getViewAt(int position) {
         RemoteViews mView = new RemoteViews(mContext.getPackageName(),
                 android.R.layout.simple_list_item_1);
-        mView.setTextViewText(android.R.id.text1, "PENIS");
-        //mView.setTextViewText(android.R.id.text1, (CharSequence) mCollections.get(position));
+        //mView.setTextViewText(android.R.id.text1, "PENIS");
+        mView.setTextViewText(android.R.id.text1, (CharSequence) mCollections.get(position));
         mView.setTextColor(android.R.id.text1, Color.BLACK);
         return mView;
     }
@@ -69,10 +72,16 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     }
 
     private void initData() {
+        mylist = MyData.getList();
         mCollections.clear();
-        for (int i = 1; i <= 10; i++) {
+        mCollections.add(mylist.get(0).getSymbol());
+        mCollections.add(mylist.get(1).getSymbol());
+        mCollections.add(mylist.get(2).getSymbol());
+        mCollections.add(mylist.get(3).getSymbol());
+
+       /* for (int i = 1; i <= 10; i++) {
             mCollections.add("ListView item " + i);
-        }
+        }*/
     }
 
     @Override

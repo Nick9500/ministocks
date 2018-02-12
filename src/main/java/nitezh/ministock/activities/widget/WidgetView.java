@@ -38,12 +38,14 @@ import android.widget.RemoteViews;
 import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
 import nitezh.ministock.WidgetProvider;
+import nitezh.ministock.activities.MyData;
 import nitezh.ministock.domain.*;
 import nitezh.ministock.utils.CurrencyTools;
 import nitezh.ministock.utils.NumberTools;
 import nitezh.ministock.utils.ReflectionTools;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ import java.util.Locale;
 import static nitezh.ministock.activities.widget.WidgetProviderBase.UpdateType;
 import static nitezh.ministock.activities.widget.WidgetProviderBase.ViewType;
 
-class WidgetView {
+public class WidgetView {
 
     private final RemoteViews remoteViews;
     private final Widget widget;
@@ -64,6 +66,8 @@ class WidgetView {
     private final String quotesTimeStamp;
     private final Context context;
     private final HashMap<ViewType, Boolean> enabledViews;
+    public List<WidgetRow> myDataList = new ArrayList<WidgetRow>();;
+    public MyData theFkingList = new MyData();
 
     public WidgetView(Context context, int appWidgetId, UpdateType updateMode,
                       HashMap<String, StockQuote> quotes, String quotesTimeStamp) {
@@ -489,7 +493,9 @@ class WidgetView {
                     setStockRowItemColor(lineNo, 5, rowInfo.getPriceColor());
                 }
             }
+            myDataList.add(rowInfo);
         }
+            theFkingList.setGlobalList(myDataList);
 
         // Set footer display
         switch (this.widget.getFooterVisibility()) {

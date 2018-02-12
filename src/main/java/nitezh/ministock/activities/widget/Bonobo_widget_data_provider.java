@@ -45,9 +45,8 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     public RemoteViews getViewAt(int position) {
         RemoteViews mView = new RemoteViews(mContext.getPackageName(),
                 android.R.layout.simple_list_item_1);
-        //mView.setTextViewText(android.R.id.text1, "PENIS");
         mView.setTextViewText(android.R.id.text1, (CharSequence) mCollections.get(position));
-        mView.setTextColor(android.R.id.text1, Color.BLACK);
+        mView.setTextColor(android.R.id.text1, Color.WHITE);
         return mView;
     }
 
@@ -74,19 +73,22 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     private void initData() {
         mylist = MyData.getList();
         mCollections.clear();
-        mCollections.add(mylist.get(0).getSymbol());
-        mCollections.add(mylist.get(1).getSymbol());
-        mCollections.add(mylist.get(2).getSymbol());
-        mCollections.add(mylist.get(3).getSymbol());
-
-       /* for (int i = 1; i <= 10; i++) {
-            mCollections.add("ListView item " + i);
-        }*/
+        for (int i=0; i<mylist.size() ; i++)
+        {
+            stockRowAdder( mylist.get(i).getSymbol(),
+                           mylist.get(i).getPrice(),
+                           mylist.get(i).getStockInfo() );
+        }
     }
 
     @Override
     public void onDestroy() {
 
+    }
+    public void stockRowAdder(String stName, String stPrice, String stPercent)
+    {
+        String stockRow = stName + "           " + stPrice + "           " + stPercent;
+        mCollections.add(stockRow);
     }
 
 }

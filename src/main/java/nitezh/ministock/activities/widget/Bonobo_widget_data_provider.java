@@ -1,5 +1,9 @@
 package nitezh.ministock.activities.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +29,6 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     List<WidgetRow> stockList = new ArrayList();
     Context mContext = null;
     private int mAppWidgetId;
-
 
     public Bonobo_widget_data_provider(Context context, Intent intent) {
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -102,4 +105,5 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     public void onDestroy() {
 
     }
+
 }

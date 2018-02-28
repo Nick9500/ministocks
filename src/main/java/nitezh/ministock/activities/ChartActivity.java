@@ -24,7 +24,7 @@ import nitezh.ministock.activities.widget.WidgetProviderBase;
 public class ChartActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
-
+    MyData myData;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         URL url = null;

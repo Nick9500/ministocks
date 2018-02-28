@@ -13,8 +13,9 @@ import nitezh.ministock.activities.widget.WidgetRow;
  */
 
 public class GlobalWidgetData extends Application {
-    // Use in population of listview 
+    // Use in population of listview
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
+    public String urlString;
 
     public static List<WidgetRow> getList() {
         return myStockList;
@@ -23,4 +24,8 @@ public class GlobalWidgetData extends Application {
     public void setGlobalList(List<WidgetRow> list) {
         myStockList = list;
     }
+
+    public void setURLString(String urlString){this.urlString = urlString;}
+
+    public String getURLString(){return urlString;};
 }

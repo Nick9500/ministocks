@@ -1,6 +1,7 @@
 package nitezh.ministock.activities;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,11 +38,10 @@ public class GlobalWidgetData extends Application {
 
     public String getURLString(){return urlString;};
 
-    public static List<String> getJsonValuesForMyDataList(String sURL){
-        List<String> closingValuesWeekly = new ArrayList<>();
+    public static JsonObject getJsonObjectRoot(String sURL)
+    {
+        JsonObject rootObj;
         try{
-
-            //"https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=MSFT&apikey=demo
             URL url = new URL(sURL);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
@@ -52,8 +52,21 @@ public class GlobalWidgetData extends Application {
                     request.getContent()));
 
             // Get a handle on the root
-            JsonObject rootObj = root.getAsJsonObject();
+            rootObj = root.getAsJsonObject();
+            return rootObj;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    public static List<String> getJsonValuesForMyDataList(JsonObject rootObj){
+        List<String> closingValuesWeekly = new ArrayList<>();
+        if (rootObj == null ){
+            Log.i("nulltest", "rootobj is null");
+        }
+        try{
             // Get a handle on Weekly closing values
             JsonObject weeklyObj = rootObj.getAsJsonObject("Weekly Adjusted Time Series");
 

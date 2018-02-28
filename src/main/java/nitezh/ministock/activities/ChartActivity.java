@@ -12,11 +12,15 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
+
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import nitezh.ministock.R;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
+import nitezh.ministock.activities.widget.WidgetRow;
 
 /**
  * Created by nicholasfong on 2018-02-21.
@@ -25,21 +29,28 @@ import nitezh.ministock.activities.widget.WidgetProviderBase;
 public class ChartActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
-    MyData myData;
+    private final String alphavantagekey = "ZKD8M6L9CEQAK89H";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         URL url = null;
         Bitmap bmImg = null;
-
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
-        Spanned html = Html.fromHtml("Sample Chart View (Row " + String.valueOf(position) + ") <br /><br />");
+        String symbol = MyData.getList().get(position).getSymbol();
+        Spanned html = Html.fromHtml("Graph of " + symbol + " <br /><br />");
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
-        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute("https://www.codeproject.com/KB/graphics/zedgraph/example_1.png");
+
+        JsonObject jObj = MyData.getJsonObjectRoot("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
+                                       +symbol+"&apikey=" + alphavantagekey);
+        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
+                +symbol+"&apikey=" + alphavantagekey);
+        List<String> monthlyPrices = MyData.getJsonValuesForMyDataList(jObj);
+
+        new ImageSnatcher( (ImageView) findViewById(R.id.chart_img) ).execute("https://www.codeproject.com/KB/graphics/zedgraph/example_1.png");
+
     }
 
     @Override

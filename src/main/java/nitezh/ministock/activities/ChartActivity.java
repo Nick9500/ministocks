@@ -43,13 +43,12 @@ public class ChartActivity extends Activity {
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
 
-        JsonObject jObj = MyData.getJsonObjectRoot("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
-                                       +symbol+"&apikey=" + alphavantagekey);
         Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
                 +symbol+"&apikey=" + alphavantagekey);
-        List<String> monthlyPrices = MyData.getJsonValuesForMyDataList(jObj);
+        List<String> monthlyPrices = MyData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
+        +symbol+"&apikey=" + alphavantagekey);
 
-        new ImageSnatcher( (ImageView) findViewById(R.id.chart_img) ).execute("https://www.codeproject.com/KB/graphics/zedgraph/example_1.png");
+        new ImageSnatcher( (ImageView) findViewById(R.id.chart_img) ).execute(MyData.constructImageUrl(monthlyPrices));
 
     }
 

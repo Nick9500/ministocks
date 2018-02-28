@@ -206,7 +206,7 @@ class WidgetView {
         stockIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, this.widget.getId());
         stockIntent.setAction("POP_CHART");
         this.remoteViews.setPendingIntentTemplate(R.id.widgetCollectionList,
-                PendingIntent.getBroadcast(context, this.widget.getId(), stockIntent, 0));
+                PendingIntent.getBroadcast(this.context, this.widget.getId(), stockIntent, 0));
     }
 
     private HashMap<WidgetProviderBase.ViewType, Boolean> getEnabledViews() {

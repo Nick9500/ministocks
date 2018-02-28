@@ -1,6 +1,7 @@
 package nitezh.ministock.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import nitezh.ministock.R;
+import nitezh.ministock.activities.widget.WidgetProviderBase;
 
 /**
  * Created by nicholasfong on 2018-02-21.
@@ -24,13 +26,17 @@ public class ChartActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
     MyData myData;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         URL url = null;
         Bitmap bmImg = null;
+
+        int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
-        Spanned html = Html.fromHtml("Sample Chart View <br /><br />");
+        Spanned html = Html.fromHtml("Sample Chart View (Row " + String.valueOf(position) + ") <br /><br />");
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
         new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute("https://www.codeproject.com/KB/graphics/zedgraph/example_1.png");

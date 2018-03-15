@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
->
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
         <TextView
             android:id="@+id/chart_text"
             android:layout_width="fill_parent"
@@ -15,16 +20,62 @@
             android:gravity="fill_horizontal"
             android:padding="10dp"
             android:paddingTop="0dp"
-            android:singleLine="false"
-            android:textSize="16dp"></TextView>
+            android:gravity="fill_horizontal"
+            >
+        </TextView>
 
         <ImageView
             android:id="@+id/chart_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/chart_img"
-            android:padding="10dp"
-            android:paddingTop="0dp" />
+            android:paddingTop="0dp"
+            />
+
+        <LinearLayout
+            android:id="@+id/lh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/editText2"
+                android:layout_below="@+id/editText2"
+                android:layout_marginTop="15dp"
+                android:text="7 Day" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </View>
+
+            <Button
+                android:id="@+id/Button01"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="52 Wks" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+            </View>
+
+            <Button
+                android:id="@+id/Button02"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="12 Mths" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

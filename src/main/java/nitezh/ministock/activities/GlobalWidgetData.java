@@ -29,21 +29,26 @@ public class GlobalWidgetData extends Application {
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
     public String urlString;
 
-    public static List<WidgetRow> getList() {
+    public static List<WidgetRow> getList()
+    {
         return myStockList;
     }
 
     public void setGlobalList(List<WidgetRow> list) {
         myStockList = list;
     }
-    public void setURLString(String urlString){this.urlString = urlString;}
 
-    public String getURLString(){return urlString;};
+    public void setURLString(String urlString) {
+        this.urlString = urlString;
+    }
 
-    public static JsonObject getJsonObjectRoot(String sURL)
-    {
+    public String getURLString() {
+        return urlString;
+    };
+
+    public static JsonObject getJsonObjectRoot(String sURL) {
         JsonObject rootObj;
-        try{
+        try {
             URL url = new URL(sURL);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
@@ -63,9 +68,9 @@ public class GlobalWidgetData extends Application {
         return null;
     }
 
-    public static List<String> getValues(String sURL){
+    public static List<String> getValues(String sURL) {
         List<String> toReturn = null;
-        try{
+        try {
             toReturn = new JsonSnatcher().execute(sURL).get();
         }
         catch(Exception e)
@@ -75,8 +80,7 @@ public class GlobalWidgetData extends Application {
         return toReturn;
     }
 
-    public static String constructImageUrl( List<String> list)
-    {
+    public static String constructImageUrl( List<String> list) {
         String cht;             //Chart Type
         String chd;             //Chart Data  (i.e. t:Data1,Data2,Data2,etc)
         String chds;            //Text Format custom scaling
@@ -87,11 +91,14 @@ public class GlobalWidgetData extends Application {
         chd = "chd=t%3A";                                           //Data of line graph. Must begin with t:
         chds = "chds=a";                                            //Automatic text format scaling
         chxt ="chxt=x%2Cy";                                         //Specify X and Y Axes
-        chs = "chs=540x999";                                        //chart size
+        chs = "chs=700x690";                                        //chart size
         chtt = "chtt=Test%20Graph";                                 //Name of Graph
         String chdVars = "";
-        for(int i = 0; i < list.size(); i++){
-            if (i == 0 ){ //first
+
+        for(int i = 0; i < list.size(); i++)
+        {
+            if (i == 0 )
+            { //first
                 chdVars = chdVars+list.get(i);
             }
             else
@@ -108,6 +115,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
     String sURL;
 
     public JsonSnatcher(){}
+
     public JsonSnatcher(String sURL) {
         this.sURL = sURL;
     }
@@ -134,6 +142,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
 
             Set<Map.Entry<String, JsonElement>> entries = weeklyObj.entrySet();
             int weekCounter = 0;
+
             for ( Map.Entry<String, JsonElement> entry : entries )
             {
                 if ( weekCounter <= 51 ){
@@ -144,7 +153,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                 weekCounter++;
             }
         }
-        catch( Exception e ){
+        catch( Exception e ) {
             e.printStackTrace();
         }
         return closingValuesWeekly;

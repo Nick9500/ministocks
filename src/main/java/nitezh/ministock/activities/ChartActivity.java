@@ -75,25 +75,35 @@ public class ChartActivity extends Activity {
         Button but52wk = (Button) findViewById(R.id.but_52wk);
         Button but12mth = (Button) findViewById(R.id.but_12mth);
         String symbol = MyData.getList().get(position).getSymbol();
+
         but7day.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MyData.setInterval(1);
-                recreate();
-                Log.i("TEST PRINT", "WE CLICKED 7 DAY");
+                finish();
+                startActivity(getIntent());
+                //recreate();
+
+                // Log.i("TEST PRINT", "WE CLICKED 7 DAY");
             }
         });
         but52wk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MyData.setInterval(2);
-                recreate();
-                Log.i("TEST PRINT", "WE CLICKED 52 WK");
+                finish();
+                startActivity(getIntent());
+                //recreate();
+
+                // Log.i("TEST PRINT", "WE CLICKED 52 WK");
             }
         });
         but12mth.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MyData.setInterval(3);
-                recreate();
-                Log.i("TEST PRINT", "WE CLICKED 12 MTH");
+                finish();
+                startActivity(getIntent());
+                //recreate();
+
+                //Log.i("TEST PRINT", "WE CLICKED 12 MTH");
             }
         });
         String intervalStr = intervalSwitcher(interval);

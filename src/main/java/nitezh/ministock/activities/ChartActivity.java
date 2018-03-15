@@ -1,6 +1,9 @@
 package nitezh.ministock.activities;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +12,9 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +25,11 @@ import java.net.URL;
 import java.util.List;
 
 import nitezh.ministock.R;
+import nitezh.ministock.WidgetProvider;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
 import nitezh.ministock.activities.widget.WidgetRow;
+
+import static nitezh.ministock.activities.MyData.interval;
 
 /**
  * Created by nicholasfong on 2018-02-21.
@@ -35,21 +44,77 @@ public class ChartActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         URL url = null;
         Bitmap bmImg = null;
+        int interval = MyData.getInterval();
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
+        //MyData.setInterval(2); /*= getIntent().getIntExtra(WidgetProviderBase.INTERVAL, 2);*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
         String symbol = MyData.getList().get(position).getSymbol();
         Spanned html = Html.fromHtml("Graph of " + symbol + " <br /><br />");
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
+        String intervalStr = intervalSwitcher(interval);
+        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey);
 
-        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
-                +symbol+"&apikey=" + alphavantagekey);
-        List<String> monthlyPrices = MyData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol="
-        +symbol+"&apikey=" + alphavantagekey);
 
-        new ImageSnatcher( (ImageView) findViewById(R.id.chart_img) ).execute(MyData.constructImageUrl(monthlyPrices));
+        List<String> prices = MyData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey, interval);
 
+        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(MyData.constructImageUrl(prices));
+
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        int interval = MyData.getInterval();
+        int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
+        Button but7day = (Button) findViewById(R.id.but_7day);
+        Button but52wk = (Button) findViewById(R.id.but_52wk);
+        Button but12mth = (Button) findViewById(R.id.but_12mth);
+        String symbol = MyData.getList().get(position).getSymbol();
+        but7day.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MyData.setInterval(1);
+                recreate();
+                Log.i("TEST PRINT", "WE CLICKED 7 DAY");
+            }
+        });
+        but52wk.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MyData.setInterval(2);
+                recreate();
+                Log.i("TEST PRINT", "WE CLICKED 52 WK");
+            }
+        });
+        but12mth.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MyData.setInterval(3);
+                recreate();
+                Log.i("TEST PRINT", "WE CLICKED 12 MTH");
+            }
+        });
+        String intervalStr = intervalSwitcher(interval);
+        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey);
+
+
+        List<String> prices = MyData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey, interval);
+
+        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(MyData.constructImageUrl(prices));
+    }
+
+    public String intervalSwitcher(int interval) {
+        if (interval == 1) {
+            return "DAILY";
+        } else if (interval == 3) {
+            return "MONTHLY";
+        } else {
+            return "WEEKLY";
+        }
     }
 
     @Override

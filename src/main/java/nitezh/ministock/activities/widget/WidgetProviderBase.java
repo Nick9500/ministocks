@@ -55,6 +55,7 @@ public class WidgetProviderBase extends AppWidgetProvider {
     public static final String TOAST_ACTION = "TOAST_ACTION";
 
     public static String ROW_POSITION = "ROW_POSITION";
+    public static String INTERVAL = "2";
 
     private static void applyUpdate(Context context, int appWidgetId, UpdateType updateMode,
                                     HashMap<String, StockQuote> quotes, String quotesTimeStamp) {

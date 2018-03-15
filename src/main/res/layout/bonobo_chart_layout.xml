@@ -40,7 +40,7 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/but_7day"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/editText2"
@@ -55,7 +55,7 @@
             </View>
 
             <Button
-                android:id="@+id/Button01"
+                android:id="@+id/but_52wk"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -68,7 +68,7 @@
             </View>
 
             <Button
-                android:id="@+id/Button02"
+                android:id="@+id/but_12mth"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

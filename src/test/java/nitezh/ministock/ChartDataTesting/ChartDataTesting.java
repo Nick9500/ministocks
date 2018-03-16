@@ -12,7 +12,8 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 
 import nitezh.ministock.activities.ChartActivity;
-import nitezh.ministock.activities.MyData;
+import nitezh.ministock.activities.GlobalWidgetData;
+import nitezh.ministock.activities.GlobalWidgetData;
 
 import static org.mockito.Mockito.mock;
 
@@ -32,7 +33,7 @@ public class ChartDataTesting extends AndroidTestCase {
     String chtt;            //Chart Title\
     String urlString;
     URL url;
-    MyData myData;
+    GlobalWidgetData myData;
     ChartActivity chartActivity;
     Bundle bundle;
 

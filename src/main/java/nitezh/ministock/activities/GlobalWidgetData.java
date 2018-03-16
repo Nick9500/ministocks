@@ -10,17 +10,20 @@ import java.util.List;
  * Created by Cristi Arde on 2/11/2018.
  */
 
-public class GlobalWidgetData extends Application{
+public class GlobalWidgetData extends Application {
     // Use in population of listview 
-    public static  List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
+    public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
+    public static List<String> symbols = new ArrayList<String>();
 
-    public static List<WidgetRow> getList()
-    {
+    public static List<WidgetRow> getList() {
         return myStockList;
     }
 
-    public void setGlobalList(List<WidgetRow> list)
-    {
+    public void setGlobalList(List<WidgetRow> list) {
         myStockList = list;
     }
+
+    public static List<String>  getSymbols() {  return symbols; }
+
+    public void  setSymbols(List<String> s) { symbols = s;  }
 }

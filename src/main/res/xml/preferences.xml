@@ -354,5 +354,10 @@
             android:summary="Export data through email"
             android:title="Export">
         </PreferenceScreen>
+        <PreferenceScreen
+            android:key="open_file"
+            android:summary="Import stocks from file"
+            android:title="Import">
+        </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -56,7 +56,7 @@ import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
 import static nitezh.ministock.activities.widget.WidgetProviderBase.UpdateType;
 import static nitezh.ministock.activities.widget.WidgetProviderBase.ViewType;
 
-class WidgetView {
+public class WidgetView {
 
     private final RemoteViews remoteViews;
     private final Widget widget;
@@ -224,7 +224,7 @@ class WidgetView {
         return enabledViews;
     }
 
-    private WidgetRow getRowInfo(String symbol, ViewType widgetView) {
+    public WidgetRow getRowInfo(String symbol, ViewType widgetView) {
         WidgetRow widgetRow = new WidgetRow(this.widget);
         StockQuote quote = this.quotes.get(symbol);
 
@@ -479,20 +479,36 @@ class WidgetView {
     public void applyPendingChanges(int widgetId) {
         int widgetDisplay = this.getNextView(this.updateMode);
         this.clear();
-
+        List<String> importSymbols = myData.getSymbols();
         // Reset list. Otherwise duplicates the entries
         myStockList.clear();
 
         int lineNo = 0;
-        for (String symbol : this.symbols) {
-            if (symbol.equals("")) {
-                continue;
-            }
+        if (importSymbols.size() == 0)
+        {
+            for (String symbol : this.symbols) {
+                if (symbol.equals("")) {
+                    continue;
+                }
 
-            // Get the info for this quote
-            lineNo++;
-            WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
-            myStockList.add(rowInfo);
+                // Get the info for this quote
+                lineNo++;
+                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
+                myStockList.add(rowInfo);
+            }
+        }
+        else
+        {
+            for (String symbol : importSymbols) {
+                if (symbol.equals("")) {
+                    continue;
+                }
+
+                // Get the info for this quote
+                lineNo++;
+                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
+                myStockList.add(rowInfo);
+            }
         }
         myData.setGlobalList(myStockList);
 

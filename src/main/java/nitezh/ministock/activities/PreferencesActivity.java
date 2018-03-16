@@ -43,6 +43,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -50,28 +51,46 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import nitezh.ministock.DialogTools;
+import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
+import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
 import nitezh.ministock.activities.widget.WidgetRow;
+import nitezh.ministock.activities.widget.WidgetView;
+import nitezh.ministock.domain.AndroidWidgetRepository;
+import nitezh.ministock.domain.PortfolioStock;
+import nitezh.ministock.domain.PortfolioStockRepository;
+import nitezh.ministock.domain.StockQuote;
+import nitezh.ministock.domain.StockQuoteRepository;
 import nitezh.ministock.domain.Widget;
+import nitezh.ministock.domain.WidgetRepository;
 import nitezh.ministock.utils.DateTools;
+import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
+import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
+import static nitezh.ministock.activities.GlobalWidgetData.symbols;
 
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -96,6 +115,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private String mTimePickerKey = null;
     private int mHour = 0;
     private int mMinute = 0;
+
+    public GlobalWidgetData myData = new GlobalWidgetData();
 
     private String getChangeLog() {
         return CHANGE_LOG;
@@ -482,6 +503,21 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 sendEmailToUser();
+                return true;
+            }
+        });
+
+        final Preference importFile = findPreference("open_file");
+        importFile.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                try {
+                    importStocks();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //Toast.makeText(PreferencesActivity.this, "This is my import message!", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -894,4 +930,46 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 "Please support MinistocksActivity by giving the application a 5 star rating in the android market.<br /><br />Motivation to continue to improve the product and add new features comes from positive feedback and ratings.",
                 "Rate it!", "Close", callable, null);
     }
+
+    private void importStocks() throws IOException {
+
+        List <String> symbols = new ArrayList<String>();
+
+        WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
+        Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
+        StockQuoteRepository quoteRepository = new StockQuoteRepository(
+               PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
+                widgetRepository);
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
+        if(file.exists())
+        {
+            FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
+
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+
+                symbols.add(line);
+            }
+            bufferedReader.close();
+            myData.setSymbols(symbols);
+
+            HashMap<String, StockQuote> stockQuotes = quoteRepository.getQuotes(symbols, false);
+
+            //  HashMap<String, PortfolioStock> portfolioStocks = new PortfolioStockRepository(
+            //           PreferenceStorage.getInstance(getApplicationContext()), widgetRepository).getStocksForSymbols(symbols);
+            WidgetView widgetView = new WidgetView(getApplicationContext(), 3, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, null);
+            widgetView.applyPendingChanges(3);
+        }
+        else
+        {
+            Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
+                    Toast.LENGTH_LONG).show();
+        }
+
+    }
+
 }

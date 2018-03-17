@@ -12,7 +12,6 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
-import android.util.Log;
 
 /**
  * Created by Gurkomal Rao, Jefferson Casimir, Nicholas Fong on 3/14/2018.
@@ -31,7 +30,14 @@ public class SimpleUITesting {
 
     @After
     public void finish(){
-        mDevice.pressHome();    //After every test go back to home screen
+        mDevice.pressBack();    //After every test go back to home screen
+        mDevice.pressBack();    //After every test go back to home screen
+    }
+
+    @Test
+    public void clickRefresh() throws UiObjectNotFoundException
+    {
+        selectRefresh();
     }
 
     @Test
@@ -40,7 +46,7 @@ public class SimpleUITesting {
         int index = 0;
         UiScrollable listView = new UiScrollable(new UiSelector());
         listView.setMaxSearchSwipes(100);
-        listView.waitForExists(5000);
+        listView.waitForExists(3000);
         listView.getChild(new UiSelector().clickable(true).index(index)).click();
     }
 
@@ -51,15 +57,27 @@ public class SimpleUITesting {
 
     @Test
     public void clickStockSetupTest() throws UiObjectNotFoundException{
-        selectPreferences();                        //click Preferences Button
-        selectStockSetup();                        //click Stocks setup
-        setStock(1, "K");       //Add 2nd Stock
-        setStock(0, "MMD");     //Change 1st Stock
-        removeStock(1);                     //Remove 2nd Stock
+        selectPreferences();                        // Click Preferences Button
+        selectStockSetup();                        // Click Stocks setup
+        setStock(1, "K");       // Add 2nd Stock
+        setStock(0, "MMD");     // Change 1st Stock
+        removeStock(1);                     // Remove 2nd Stock
+    }
+
+    @Test
+    public void clickUpdatePrices() throws UiObjectNotFoundException{
+        selectPreferences();                        // Click Preferences Button
+        updatePrices();                             // Click Update prices now
     }
 
     private void selectPreferences()throws UiObjectNotFoundException{
         String preferencesResourceId = "nitezh.ministock:id/prefs_but";
+        UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));
+        button.clickAndWaitForNewWindow();
+    }
+
+    private void selectRefresh()throws UiObjectNotFoundException{
+        String preferencesResourceId = "nitezh.ministock:id/test_but";
         UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));
         button.clickAndWaitForNewWindow();
     }
@@ -69,8 +87,10 @@ public class SimpleUITesting {
         UiScrollable preferencesListView  = new UiScrollable(new UiSelector());
         preferencesListView.setMaxSearchSwipes(100);
         preferencesListView.scrollTextIntoView(stockSetup);
-        preferencesListView.waitForExists(5000);
-        UiObject preferencesListItem = preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),""+stockSetup+"");
+        preferencesListView.waitForExists(3000);
+        UiObject preferencesListItem =
+                preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
+                        stockSetup);
         preferencesListItem.click();
     }
 
@@ -85,17 +105,29 @@ public class SimpleUITesting {
     private void setStock(int index, String symbolToAdd) throws UiObjectNotFoundException{
         UiObject searchField = selectStockView(index);
         searchField.setText(symbolToAdd);
-        searchField.clickAndWaitForNewWindow(2000);
+        searchField.clickAndWaitForNewWindow(3000);
         mDevice.pressDPadDown();
         mDevice.pressDPadUp();
         mDevice.pressEnter();
+
     }
 
     private void removeStock(int index)throws UiObjectNotFoundException{
         UiObject searchField = selectStockView(index);
         searchField.clearTextField();
-        searchField.clickAndWaitForNewWindow(2000);
+        searchField.clickAndWaitForNewWindow(3000);
         mDevice.click(540,200);
     }
 
+    private void updatePrices() throws UiObjectNotFoundException{
+        String updatePricesNow = "Update prices now";
+        UiScrollable preferencesListView  = new UiScrollable(new UiSelector());
+        preferencesListView.setMaxSearchSwipes(100);
+        preferencesListView.scrollTextIntoView(updatePricesNow);
+        preferencesListView.waitForExists(3000);
+        UiObject preferencesListItem =
+                preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
+                       updatePricesNow);
+        preferencesListItem.click();
+    }
 }

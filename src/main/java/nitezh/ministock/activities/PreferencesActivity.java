@@ -40,13 +40,18 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.text.InputType;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nitezh.ministock.DialogTools;
 import nitezh.ministock.MimeSendTask;
@@ -70,17 +75,21 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     // Private
     private static boolean mPendingUpdate = false;
     private static String mSymbolSearchKey = "";
-    private final String CHANGE_LOG = ""
-//            + "New features:<br/><br/>"
-//            + "• TODO.<br/><br/>"
-            + "Multiple bug fixes:<br/><br/>"
-            + "• Allow comma when entering numbers";
-    String m_Text; //store input of the user
+    private final String CHANGE_LOG = "";
+
+    //  TODO: Allow comma when entering numbers;
+    private final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     // Fields for time pickers
     private TimePickerDialog.OnTimeSetListener mTimeSetListener;
     private String mTimePickerKey = null;
     private int mHour = 0;
     private int mMinute = 0;
+
+    private boolean isValidEmail(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
+    }
 
     private String getChangeLog() {
         return CHANGE_LOG;
@@ -808,32 +817,55 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
     private void sendEmailToUser() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
-
         // Set up the input
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        AlertDialog builder = new AlertDialog.Builder(this)
+                .setTitle("Enter Destination E-mail Address")
+                .setPositiveButton("Send", null)
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                .setView(input)
+                .create();
+
+        builder.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                m_Text = input.getText().toString();
-                new MimeSendTask(m_Text).execute();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onShow(final DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String email = input.getText().toString();
+
+                        if (email.length() > 0 && isValidEmail(email)) {
+                            new MimeSendTask(email).execute();
+                            Toast.makeText(PreferencesActivity.this,
+                                    "Sending e-mail to " + email, Toast.LENGTH_LONG).show();
+                            dialogInterface.dismiss();
+                        } else {
+                            new AlertDialog.Builder(PreferencesActivity.this)
+                                    .setTitle("Verify Input")
+                                    .setMessage("Please enter a valid e-mail address format")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                });
             }
         });
 
         builder.show();
-
     }
 
     private void showChangeLog() {

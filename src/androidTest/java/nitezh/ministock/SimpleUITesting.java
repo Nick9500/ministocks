@@ -1,9 +1,5 @@
 package nitezh.ministock;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,6 +8,11 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Created by Gurkomal Rao, Jefferson Casimir, Nicholas Fong on 3/14/2018.
@@ -24,25 +25,23 @@ public class SimpleUITesting {
     UiDevice mDevice;
 
     @Before
-    public void setup(){
+    public void setup() {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
     @After
-    public void finish(){
+    public void finish() {
         mDevice.pressBack();    //After every test go back to home screen
         mDevice.pressBack();    //After every test go back to home screen
     }
 
     @Test
-    public void clickRefresh() throws UiObjectNotFoundException
-    {
+    public void clickRefresh() throws UiObjectNotFoundException {
         selectRefresh();
     }
 
     @Test
-    public void clickListItemTest() throws UiObjectNotFoundException
-    {
+    public void clickListItemTest() throws UiObjectNotFoundException {
         int index = 0;
         UiScrollable listView = new UiScrollable(new UiSelector());
         listView.setMaxSearchSwipes(100);
@@ -51,12 +50,12 @@ public class SimpleUITesting {
     }
 
     @Test
-    public void clickPreferencesTest() throws UiObjectNotFoundException{
+    public void clickPreferencesTest() throws UiObjectNotFoundException {
         selectPreferences();
     }
 
     @Test
-    public void clickStockSetupTest() throws UiObjectNotFoundException{
+    public void clickStockSetupTest() throws UiObjectNotFoundException {
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();                        // Click Stocks setup
         setStock(1, "K");       // Add 2nd Stock
@@ -65,26 +64,26 @@ public class SimpleUITesting {
     }
 
     @Test
-    public void clickUpdatePrices() throws UiObjectNotFoundException{
+    public void clickUpdatePrices() throws UiObjectNotFoundException {
         selectPreferences();                        // Click Preferences Button
         updatePrices();                             // Click Update prices now
     }
 
-    private void selectPreferences()throws UiObjectNotFoundException{
+    private void selectPreferences() throws UiObjectNotFoundException {
         String preferencesResourceId = "nitezh.ministock:id/prefs_but";
         UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));
         button.clickAndWaitForNewWindow();
     }
 
-    private void selectRefresh()throws UiObjectNotFoundException{
+    private void selectRefresh() throws UiObjectNotFoundException {
         String preferencesResourceId = "nitezh.ministock:id/test_but";
         UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));
         button.clickAndWaitForNewWindow();
     }
 
-    private void selectStockSetup() throws UiObjectNotFoundException{
+    private void selectStockSetup() throws UiObjectNotFoundException {
         String stockSetup = "Stocks setup";
-        UiScrollable preferencesListView  = new UiScrollable(new UiSelector());
+        UiScrollable preferencesListView = new UiScrollable(new UiSelector());
         preferencesListView.setMaxSearchSwipes(100);
         preferencesListView.scrollTextIntoView(stockSetup);
         preferencesListView.waitForExists(3000);
@@ -94,15 +93,15 @@ public class SimpleUITesting {
         preferencesListItem.click();
     }
 
-    private UiObject selectStockView(int index)throws UiObjectNotFoundException{
+    private UiObject selectStockView(int index) throws UiObjectNotFoundException {
         String searchFieldResourceId = "android:id/search_src_text";
-        UiScrollable stockListView  = new UiScrollable(new UiSelector());
+        UiScrollable stockListView = new UiScrollable(new UiSelector());
         stockListView.getChild(new UiSelector().clickable(true).index(index)).click();
         UiObject searchField = mDevice.findObject(new UiSelector().resourceId(searchFieldResourceId));
         return searchField;
     }
 
-    private void setStock(int index, String symbolToAdd) throws UiObjectNotFoundException{
+    private void setStock(int index, String symbolToAdd) throws UiObjectNotFoundException {
         UiObject searchField = selectStockView(index);
         searchField.setText(symbolToAdd);
         searchField.clickAndWaitForNewWindow(3000);
@@ -112,22 +111,22 @@ public class SimpleUITesting {
 
     }
 
-    private void removeStock(int index)throws UiObjectNotFoundException{
+    private void removeStock(int index) throws UiObjectNotFoundException {
         UiObject searchField = selectStockView(index);
         searchField.clearTextField();
         searchField.clickAndWaitForNewWindow(3000);
-        mDevice.click(540,200);
+        mDevice.click(540, 200);
     }
 
-    private void updatePrices() throws UiObjectNotFoundException{
+    private void updatePrices() throws UiObjectNotFoundException {
         String updatePricesNow = "Update prices now";
-        UiScrollable preferencesListView  = new UiScrollable(new UiSelector());
+        UiScrollable preferencesListView = new UiScrollable(new UiSelector());
         preferencesListView.setMaxSearchSwipes(100);
         preferencesListView.scrollTextIntoView(updatePricesNow);
         preferencesListView.waitForExists(3000);
         UiObject preferencesListItem =
                 preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
-                       updatePricesNow);
+                        updatePricesNow);
         preferencesListItem.click();
     }
 }

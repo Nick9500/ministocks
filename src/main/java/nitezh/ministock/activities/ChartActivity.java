@@ -66,8 +66,7 @@ public class ChartActivity extends Activity {
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         int interval = GlobalWidgetData.getInterval();
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);

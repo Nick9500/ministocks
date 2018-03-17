@@ -3,8 +3,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -20,24 +19,21 @@
             android:gravity="fill_horizontal"
             android:padding="10dp"
             android:paddingTop="0dp"
-            android:gravity="fill_horizontal"
-            >
-        </TextView>
+            android:singleLine="false"
+            android:textSize="16dp"></TextView>
 
         <ImageView
             android:id="@+id/chart_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/chart_img"
-            android:paddingTop="0dp"
-            />
+            android:paddingTop="0dp" />
 
         <LinearLayout
             android:id="@+id/lh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/but_7day"
@@ -49,8 +45,7 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </View>
+                android:layout_weight="1"></View>
 
             <Button
                 android:id="@+id/but_52wk"
@@ -62,8 +57,7 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" >
-            </View>
+                android:layout_weight="1"></View>
 
             <Button
                 android:id="@+id/but_12mth"

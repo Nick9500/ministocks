@@ -1,9 +1,11 @@
 package nitezh.ministock;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.common.io.Files;
 
@@ -32,8 +34,10 @@ import nitezh.ministock.activities.widget.WidgetRow;
 
 public class MimeSendTask extends AsyncTask<Void, Void, Void> {
     private String toAddress;
+    private Context context;
 
-    public MimeSendTask(String toAddress) {
+    public MimeSendTask(Context context, String toAddress) {
+        this.context = context;
         this.toAddress = toAddress;
     }
 
@@ -106,9 +110,17 @@ public class MimeSendTask extends AsyncTask<Void, Void, Void> {
             mm.setFileName("stocks.csv");
             //Sending email
             Transport.send(mm);
+
+            Toast.makeText(context,
+                    "Sending e-mail to " + toAddress, Toast.LENGTH_LONG).show();
+
         } catch (MessagingException max) {
             max.printStackTrace();
+            Toast.makeText(context,
+                    "Failed to send e-mail to " + toAddress, Toast.LENGTH_LONG).show();
         } catch (IOException ioe) {
+            Toast.makeText(context,
+                    "Failed to send e-mail to " + toAddress, Toast.LENGTH_LONG).show();
             ioe.printStackTrace();
         }
         return null;

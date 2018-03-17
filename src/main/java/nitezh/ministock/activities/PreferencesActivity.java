@@ -44,7 +44,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -845,9 +844,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                         String email = input.getText().toString();
 
                         if (email.length() > 0 && isValidEmail(email)) {
-                            new MimeSendTask(email).execute();
-                            Toast.makeText(PreferencesActivity.this,
-                                    "Sending e-mail to " + email, Toast.LENGTH_LONG).show();
+                            new MimeSendTask(PreferencesActivity.this, email).execute();
                             dialogInterface.dismiss();
                         } else {
                             new AlertDialog.Builder(PreferencesActivity.this)

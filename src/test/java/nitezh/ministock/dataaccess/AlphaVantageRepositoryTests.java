@@ -20,15 +20,15 @@ public class AlphaVantageRepositoryTests {
     String timeInterval;
     @Before
     public void setUp() {
-        vantageList = null;
-        FxChangeRepository fxRepository = new FxChangeRepository();
+    vantageList = null;
+    FxChangeRepository fxRepository = new FxChangeRepository();
         this.alphaVantageRepository = new AlphaVantageRepository(fxRepository);
-    }
+}
 
     @Test
     public void retrieveDailyValues() throws JSONException{
         symbols = "GOOG";
-         timeInterval = "TIME_SERIES_DAILY";
+        timeInterval = "TIME_SERIES_DAILY";
         vantageList = returnJSONArray(timeInterval,symbols);
         assertNotNull(vantageList);
         Assert.assertEquals(1005, vantageList.length());

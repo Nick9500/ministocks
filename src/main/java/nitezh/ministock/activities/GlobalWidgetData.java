@@ -13,7 +13,6 @@ import java.util.List;
 public class GlobalWidgetData extends Application {
     // Use in population of listview 
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
-    public static List<String> symbols = new ArrayList<String>();
 
     public static List<WidgetRow> getList() {
         return myStockList;
@@ -23,7 +22,4 @@ public class GlobalWidgetData extends Application {
         myStockList = list;
     }
 
-    public static List<String>  getSymbols() {  return symbols; }
-
-    public void  setSymbols(List<String> s) { symbols = s;  }
 }

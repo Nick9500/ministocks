@@ -26,6 +26,7 @@ package nitezh.ministock.activities;
 
 import android.app.SearchManager;
 import android.app.TimePickerDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +42,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -63,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -72,6 +75,8 @@ import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
 import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
+import nitezh.ministock.WidgetProvider;
+import nitezh.ministock.activities.widget.Bonobo_widget_service;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
 import nitezh.ministock.activities.widget.WidgetRow;
 import nitezh.ministock.activities.widget.WidgetView;
@@ -90,7 +95,7 @@ import static android.content.SharedPreferences.Editor;
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
-import static nitezh.ministock.activities.GlobalWidgetData.symbols;
+
 
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -825,7 +830,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             }
         }
     }
-
+/*
     @Override
     protected void onStop() {
         super.onStop();
@@ -841,7 +846,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         }
         finish();
     }
-
+*/
     private void showHelpUsage() {
         String title = "Selecting widget views";
         String body = "The widget has multiple views that display different information.<br /><br />These views can be turned on from the AppWidgetProvider views menu in settings.<br /><br />Once selected, the views can be changed on your home screen by touching the right-side of the widget.<br /><br />If a stock does not have information for a particular view, then the daily percentage change will instead be displayed for that stock in blue.<br /><br /><b>Daily change %</b><br /><br />Shows the current stock price with the daily percentage change.<br /><br /><b>Daily change (DA)</b><br /><br />Shows the current stock price with the daily price change.<br /><br /><b>Total change % (PF T%)</b><br /><br />Shows the current stock price with the total percentage change from the buy price in the portfolio.<br /><br /><b>Total change (PF TA)</b><br /><br />Shows the current stock price with the total price change from the buy price in the portfolio.<br /><br /><b>Total change AER % (PF AER)</b><br /><br />Shows the current stock price with the annualised percentage change using the buy price in the portfolio.<br /><br /><b>P/L daily change % (P/L D%)</b><br /><br />Shows your current holding value with the daily percentage change.<br /><br /><b>P/L daily change (P/L DA)</b><br /><br />Shows your current holding value with the daily price change.<br /><br /><b>P/L total change % (P/L T%)</b><br /><br />Shows your current holding value with the total percentage change from the buy cost in the portfolio.<br /><br /><b>P/L total change (P/L TA)</b><br /><br />Shows your current holding value with the total value change from the buy cost in the portfolio.<br /><br /><b>P/L total change AER (P/L AER)</b><br /><br />Shows your current holding value with the annualised percentage change using the buy cost in the portfolio.";
@@ -933,13 +938,10 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
     private void importStocks() throws IOException {
 
-        List <String> symbols = new ArrayList<String>();
+        Widget widget;
+        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
 
-        WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
-        Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
-        StockQuoteRepository quoteRepository = new StockQuoteRepository(
-               PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
-                widgetRepository);
+        List <String> symbols = new ArrayList<String>();
 
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists())
@@ -955,14 +957,30 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 symbols.add(line);
             }
             bufferedReader.close();
-            myData.setSymbols(symbols);
 
-            HashMap<String, StockQuote> stockQuotes = quoteRepository.getQuotes(symbols, false);
+            WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
+            Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
+            StockQuoteRepository quoteRepository = new StockQuoteRepository(
+                    PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
+                    widgetRepository);
 
-            //  HashMap<String, PortfolioStock> portfolioStocks = new PortfolioStockRepository(
-            //           PreferenceStorage.getInstance(getApplicationContext()), widgetRepository).getStocksForSymbols(symbols);
-            WidgetView widgetView = new WidgetView(getApplicationContext(), 3, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, null);
-            widgetView.applyPendingChanges(3);
+            widget = widgetRepository.getWidget(mAppWidgetId);
+            HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(symbols);
+            String time = quoteRepository.getTimeStamp();
+            quoteRepository.saveQuotes(stockQuotes, time);
+            WidgetView widgetView = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, time);
+            myStockList.clear();
+            for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
+            {
+                WidgetRow row = new WidgetRow(widget);
+                row.setSymbol(entry.getKey());
+                row.setPrice(entry.getValue().getPrice());
+                row.setStockInfo(entry.getValue().getPercent());
+                myStockList.add(row);
+
+            }
+            myData.setGlobalList(myStockList);
+
         }
         else
         {
@@ -970,6 +988,17 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                     Toast.LENGTH_LONG).show();
         }
 
+         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        remoteViews.setRemoteAdapter( R.id.widgetCollectionList, intent);
+
+        // Updates the widget ListView immediately
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widgetCollectionList);
+
     }
+
 
 }

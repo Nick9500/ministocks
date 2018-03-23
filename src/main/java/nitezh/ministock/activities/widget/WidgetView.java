@@ -47,6 +47,7 @@ import nitezh.ministock.utils.NumberTools;
 import nitezh.ministock.utils.ReflectionTools;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -443,7 +444,7 @@ public class WidgetView {
         return remoteViews;
     }
 
-    private int getNextView(UpdateType updateMode) {
+    public int getNextView(UpdateType updateMode) {
         int currentView = this.widget.getPreviousView();
         if (updateMode == UpdateType.VIEW_CHANGE) {
             currentView += 1;
@@ -479,13 +480,12 @@ public class WidgetView {
     public void applyPendingChanges(int widgetId) {
         int widgetDisplay = this.getNextView(this.updateMode);
         this.clear();
-        List<String> importSymbols = myData.getSymbols();
+       // List<String> importSymbols = myData.getSymbols();
         // Reset list. Otherwise duplicates the entries
         myStockList.clear();
 
         int lineNo = 0;
-        if (importSymbols.size() == 0)
-        {
+
             for (String symbol : this.symbols) {
                 if (symbol.equals("")) {
                     continue;
@@ -496,20 +496,8 @@ public class WidgetView {
                 WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
                 myStockList.add(rowInfo);
             }
-        }
-        else
-        {
-            for (String symbol : importSymbols) {
-                if (symbol.equals("")) {
-                    continue;
-                }
 
-                // Get the info for this quote
-                lineNo++;
-                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
-                myStockList.add(rowInfo);
-            }
-        }
+
         myData.setGlobalList(myStockList);
 
         Intent intent = new Intent(context, Bonobo_widget_service.class);
@@ -522,6 +510,8 @@ public class WidgetView {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widgetCollectionList);
     }
+
+
 
     private int getFooterColor() {
         String colorType = this.widget.getFooterColor();

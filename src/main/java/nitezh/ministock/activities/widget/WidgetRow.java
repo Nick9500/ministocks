@@ -128,7 +128,7 @@ public class WidgetRow {
         return stockInfo;
     }
 
-    void setStockInfo(String stockInfo) {
+    public void setStockInfo(String stockInfo) {
         this.stockInfo = stockInfo;
     }
 

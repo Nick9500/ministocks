@@ -51,8 +51,6 @@ import nitezh.ministock.utils.StorageCache;
 
 
 public class WidgetProviderBase extends AppWidgetProvider {
-    public static final String EXTRA_ITEM = "EXTRA_ITEM";
-    public static final String TOAST_ACTION = "TOAST_ACTION";
 
     public static String ROW_POSITION = "ROW_POSITION";
     public static String INTERVAL = "2";

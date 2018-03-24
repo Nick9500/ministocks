@@ -36,7 +36,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/but_7day"
+                android:id="@+id/btn_7day"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -48,7 +48,7 @@
                 android:layout_weight="1"></View>
 
             <Button
-                android:id="@+id/but_52wk"
+                android:id="@+id/btn_52wk"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -60,7 +60,7 @@
                 android:layout_weight="1"></View>
 
             <Button
-                android:id="@+id/but_12mth"
+                android:id="@+id/btn_12mth"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

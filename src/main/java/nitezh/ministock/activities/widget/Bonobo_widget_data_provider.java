@@ -1,9 +1,5 @@
 package nitezh.ministock.activities.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;

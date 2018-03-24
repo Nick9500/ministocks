@@ -70,9 +70,6 @@ public class ChartDataTesting extends AndroidTestCase {
             request.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             request.connect();
             assertEquals(request.HTTP_OK, request.getResponseCode());
-
-
-            //chartActivity.onCreate(bundle);
         }
         catch( Exception e ){
             e.printStackTrace();

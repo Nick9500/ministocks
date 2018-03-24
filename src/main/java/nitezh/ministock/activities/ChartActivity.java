@@ -1,10 +1,6 @@
 package nitezh.ministock.activities;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -13,21 +9,16 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.gson.JsonObject;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
 import nitezh.ministock.R;
-import nitezh.ministock.WidgetProvider;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
-import nitezh.ministock.activities.widget.WidgetRow;
 
 import static nitezh.ministock.activities.GlobalWidgetData.interval;
 
@@ -42,11 +33,8 @@ public class ChartActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        URL url = null;
-        Bitmap bmImg = null;
         int interval = GlobalWidgetData.getInterval();
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
-        //MyData.setInterval(2); /*= getIntent().getIntExtra(WidgetProviderBase.INTERVAL, 2);*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
@@ -54,8 +42,8 @@ public class ChartActivity extends Activity {
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
         String intervalStr = intervalSwitcher(interval);
-        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
-                + symbol + "&apikey=" + alphavantagekey);
+        Log.i( "urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey );
 
 
         List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
@@ -70,9 +58,9 @@ public class ChartActivity extends Activity {
         super.onResume();
         int interval = GlobalWidgetData.getInterval();
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
-        Button but7day = (Button) findViewById(R.id.but_7day);
-        Button but52wk = (Button) findViewById(R.id.but_52wk);
-        Button but12mth = (Button) findViewById(R.id.but_12mth);
+        Button but7day = (Button) findViewById(R.id.btn_7day);
+        Button but52wk = (Button) findViewById(R.id.btn_52wk);
+        Button but12mth = (Button) findViewById(R.id.btn_12mth);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
 
         but7day.setOnClickListener(new View.OnClickListener() {
@@ -100,9 +88,6 @@ public class ChartActivity extends Activity {
                 GlobalWidgetData.setInterval(3);
                 finish();
                 startActivity(getIntent());
-                //recreate();
-
-                //Log.i("TEST PRINT", "WE CLICKED 12 MTH");
             }
         });
         String intervalStr = intervalSwitcher(interval);

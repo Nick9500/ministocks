@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import nitezh.ministock.activities.widget.WidgetRow;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Created by Cristi Arde on 2/11/2018.
  */
@@ -51,8 +47,6 @@ public class GlobalWidgetData extends Application {
 
         return urlString;
     }
-
-
 
     // Used in Time Scale of Graph Implementation
     public static void setInterval(int intervalVal) {
@@ -109,7 +103,7 @@ public class GlobalWidgetData extends Application {
         chds = "chds=a";                                            //Automatic text format scaling
         chxt = "chxt=x%2Cy";                                         //Specify X and Y Axes
         chs = "chs=700x690";                                        //chart size
-        chtt = "chtt=Test%20Graph";                                 //Name of Graph
+        chtt = "chtt=Graph";                                 //Name of Graph
         String chdVars = "";
 
         for (int i = 0; i < list.size(); i++) {
@@ -176,7 +170,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                     dayCounter++;
                 }
             }
-            if (this.interval == 3) {
+            else if (this.interval == 3) {
                 // Get a handle on Monthly closing values
                 JsonObject monthlyObj = rootObj.getAsJsonObject("Monthly Adjusted Time Series");
 

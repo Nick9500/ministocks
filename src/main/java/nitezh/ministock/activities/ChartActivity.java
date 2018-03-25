@@ -58,12 +58,12 @@ public class ChartActivity extends Activity {
         super.onResume();
         int interval = GlobalWidgetData.getInterval();
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
-        Button but7day = (Button) findViewById(R.id.btn_7day);
-        Button but52wk = (Button) findViewById(R.id.btn_52wk);
-        Button but12mth = (Button) findViewById(R.id.btn_12mth);
+        Button btn7day = (Button) findViewById(R.id.btn_7day);
+        Button btn52wk = (Button) findViewById(R.id.btn_52wk);
+        Button btn12mth = (Button) findViewById(R.id.btn_12mth);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
 
-        but7day.setOnClickListener(new View.OnClickListener() {
+        btn7day.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 GlobalWidgetData.setInterval(1);
                 finish();
@@ -73,7 +73,7 @@ public class ChartActivity extends Activity {
                 // Log.i("TEST PRINT", "WE CLICKED 7 DAY");
             }
         });
-        but52wk.setOnClickListener(new View.OnClickListener() {
+        btn52wk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 GlobalWidgetData.setInterval(2);
                 finish();
@@ -83,7 +83,7 @@ public class ChartActivity extends Activity {
                 // Log.i("TEST PRINT", "WE CLICKED 52 WK");
             }
         });
-        but12mth.setOnClickListener(new View.OnClickListener() {
+        btn12mth.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 GlobalWidgetData.setInterval(3);
                 finish();

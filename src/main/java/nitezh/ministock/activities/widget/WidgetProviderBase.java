@@ -53,6 +53,7 @@ import nitezh.ministock.utils.StorageCache;
 public class WidgetProviderBase extends AppWidgetProvider {
 
     public static String ROW_POSITION = "ROW_POSITION";
+    public static String INTERVAL = "2";
 
     private static void applyUpdate(Context context, int appWidgetId, UpdateType updateMode,
                                     HashMap<String, StockQuote> quotes, String quotesTimeStamp) {

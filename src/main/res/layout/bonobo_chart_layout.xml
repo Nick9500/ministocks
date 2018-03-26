@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="300dp"
-        android:minWidth="300dp"
         android:orientation="vertical">
+
 
         <TextView
             android:id="@+id/chart_text"
@@ -23,9 +25,49 @@
         <ImageView
             android:id="@+id/chart_img"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:padding="10dp"
+            android:layout_height="match_parent"
             android:paddingTop="0dp" />
+
+        <LinearLayout
+            android:id="@+id/lh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_7day"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="7 Day" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></View>
+
+            <Button
+                android:id="@+id/btn_52wk"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="52 Wks" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></View>
+
+            <Button
+                android:id="@+id/btn_12mth"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="12 Mths" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

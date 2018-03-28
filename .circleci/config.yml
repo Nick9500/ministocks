@@ -38,11 +38,38 @@ jobs:
       - store_test_results:
           path: ./build/test-results
 
+  static_analysis:
+    docker:
+      - image: circleci/php:7.1.9-browsers
+    environment:
+      - CC_TEST_REPORTER_ID: 69c6c94ee6c82cfedba84ba866196d885de968f2948412c03653ab7e7a6b44da
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Setup Dependencies
+          command: |
+            sudo composer self-update
+            composer install -n --prefer-dist
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Run Tests
+          command: |
+            sudo docker-php-ext-enable xdebug
+            ./cc-test-reporter before-build
+            sudo vendor/bin/phpunit --coverage-clover clover.xml
+            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+      - static_analysis
       - test:
           requires:
             - build

@@ -1,6 +1,7 @@
 package nitezh.ministock.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -30,6 +31,7 @@ public class ChartActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
     private final String alphavantagekey = "ZKD8M6L9CEQAK89H";
+    public String symbol = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class ChartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
+        this.symbol = symbol;
         Spanned html = Html.fromHtml("Graph of " + symbol + " <br /><br />");
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
@@ -63,11 +66,11 @@ public class ChartActivity extends Activity {
         Button btnRSI = (Button) findViewById(R.id.btn_RSI);
         Button btnMACD = (Button) findViewById(R.id.btn_MACD);
 
-        // Buttons Related to Intervals
+        final String sym = this.symbol;
         Button btn7day = (Button) findViewById(R.id.btn_7day);
         Button btn52wk = (Button) findViewById(R.id.btn_52wk);
         Button btn12mth = (Button) findViewById(R.id.btn_12mth);
-
+        Button btnRss = (Button) findViewById(R.id.btn_rss);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
 
         btn7day.setOnClickListener(new View.OnClickListener() {
@@ -91,13 +94,18 @@ public class ChartActivity extends Activity {
                 startActivity(getIntent());
             }
         });
-        btnRSI.setOnClickListener(new View.OnClickListener() {
+        btnRss.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                GlobalWidgetData.setInterval(4);
-                finish();
-                startActivity(getIntent());
+                NewsfeedActivity.mAppWidgetId = mAppWidgetId;
+                Intent activity = new Intent(ChartActivity.this, NewsfeedActivity.class);
+                activity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                activity.putExtra(NewsfeedActivity.SYMBOL, sym);
+                ChartActivity.this.startActivity(activity);
             }
         });
+        String intervalStr = intervalSwitcher(interval);
+        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey);
 
         btnMACD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

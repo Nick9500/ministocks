@@ -102,7 +102,7 @@ public class GlobalWidgetData extends Application {
         chd = "chd=t%3A";                                           //Data of line graph. Must begin with t:
         chds = "chds=a";                                            //Automatic text format scaling
         chxt = "chxt=x%2Cy";                                         //Specify X and Y Axes
-        chs = "chs=980x800";                                        //chart size
+        chs = "chs=980x690";                                        //chart size
         chtt = "chtt=Graph";                                 //Name of Graph
         String chdVars = "";
 

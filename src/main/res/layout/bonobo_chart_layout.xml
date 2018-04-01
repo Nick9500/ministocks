@@ -72,10 +72,7 @@
                 android:layout_marginTop="15dp"
                 android:text="7 Days" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"></View>
+
 
             <Button
                 android:id="@+id/btn_52wk"

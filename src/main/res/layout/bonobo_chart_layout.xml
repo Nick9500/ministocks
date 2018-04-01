@@ -22,14 +22,14 @@
                 android:text="@string/graph_choices" />
 
             <Button
-                android:id="@+id/RSIbtn"
+                android:id="@+id/btn_RSI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="RSI" />
 
             <Button
-                android:id="@+id/MACDbtn"
+                android:id="@+id/btn_MACD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -72,7 +72,10 @@
                 android:layout_marginTop="15dp"
                 android:text="7 Days" />
 
-
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"></View>
 
             <Button
                 android:id="@+id/btn_52wk"

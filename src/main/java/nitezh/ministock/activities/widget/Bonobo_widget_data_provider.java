@@ -1,25 +1,20 @@
 package nitezh.ministock.activities.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import nitezh.ministock.R;
-import nitezh.ministock.WidgetProvider;
 import nitezh.ministock.activities.GlobalWidgetData;
-import nitezh.ministock.activities.PreferencesActivity;
-import nitezh.ministock.domain.Widget;
 
 /**
  * Created by nicholasfong on 2018-02-09.
@@ -34,8 +29,6 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
  //   List<String> stockSymbols = new ArrayList<String>();
     Context mContext = null;
     private int mAppWidgetId;
-
-
 
     public Bonobo_widget_data_provider(Context context, Intent intent) {
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -59,20 +52,19 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     }
 
     @Override
-    public RemoteViews getViewAt(int position)
-    {
+    public RemoteViews getViewAt(int position) {
         RemoteViews mView = new RemoteViews(mContext.getPackageName(),
-                                            R.layout.bonobo_row_item);
+                R.layout.bonobo_row_item);
         mView.setTextViewText(R.id.ticker_col, (CharSequence) sTickers.get(position));
         mView.setTextViewText(R.id.price_col, (CharSequence) sPrices.get(position));
-        mView.setTextViewText(R.id.percent_col, (CharSequence) sPercents.get(position) );
+        mView.setTextViewText(R.id.percent_col, (CharSequence) sPercents.get(position));
 
         Bundle extras = new Bundle();
         extras.putInt(WidgetProviderBase.ROW_POSITION, position);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
         mView.setOnClickFillInIntent(R.id.bonobo_item, fillInIntent);
-        
+
         return mView;
     }
 
@@ -105,16 +97,17 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
         sPrices.clear();
         sPercents.clear();
 
-
             for (int i = 0; i < stockList.size(); i++) {
                 sTickers.add(stockList.get(i).getSymbol());
                 sPrices.add(stockList.get(i).getPrice());
                 sPercents.add(stockList.get(i).getStockInfo());
             }
-}
+    }
+
 
     @Override
     public void onDestroy() {
 
     }
+
 }

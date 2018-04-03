@@ -24,10 +24,13 @@
 
 package nitezh.ministock.activities;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.TimePickerDialog;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -43,7 +46,10 @@ import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
+import android.text.InputType;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -67,11 +73,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nitezh.ministock.DialogTools;
 import nitezh.ministock.PreferenceStorage;
+
+import nitezh.ministock.MimeSendTask;
+
 import nitezh.ministock.R;
 import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
@@ -97,7 +110,6 @@ import static android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
 
 
-
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
     // Constants
@@ -109,12 +121,11 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     // Private
     private static boolean mPendingUpdate = false;
     private static String mSymbolSearchKey = "";
-    private final String CHANGE_LOG = ""
-//            + "New features:<br/><br/>"
-//            + "• TODO.<br/><br/>"
-            + "Multiple bug fixes:<br/><br/>"
-            + "• Allow comma when entering numbers";
+    private final String CHANGE_LOG = "";
 
+    //  TODO: Allow comma when entering numbers;
+    private final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     // Fields for time pickers
     private TimePickerDialog.OnTimeSetListener mTimeSetListener;
     private String mTimePickerKey = null;
@@ -122,6 +133,11 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private int mMinute = 0;
 
     public GlobalWidgetData myData = new GlobalWidgetData();
+
+    private boolean isValidEmail(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
+    }
 
     private String getChangeLog() {
         return CHANGE_LOG;
@@ -504,6 +520,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         });
 
         final Preference sendEmail = findPreference("send_email");
+
+
         sendEmail.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -859,52 +877,56 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         DialogTools.showSimpleDialog(this, title, body);
     }
 
-    private void sendEmailToUser(){
 
-        //Data Storage Directory
-        String path =
-                Environment.getExternalStorageDirectory() + File.separator  + "DataFolder";
-        File folder = new File(path);
-        folder.mkdirs();
+    private void sendEmailToUser() {
 
-        //file name
-        File file = new File(folder, "config.csv");
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        try {
-            file.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(file);
-            OutputStreamWriter outWriter = new OutputStreamWriter(fOut);
+        AlertDialog builder = new AlertDialog.Builder(this)
+                .setTitle("Enter Destination E-mail Address")
+                .setPositiveButton("Send", null)
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                .setView(input)
+                .create();
 
-            List<WidgetRow> myList = GlobalWidgetData.getList();
-            for (int i = 0; i< myList.size() ; i++)
-            {
-                outWriter.append(myList.get(i).getPrice());
-                outWriter.append(",");
-                outWriter.append(myList.get(i).getSymbol());
-                outWriter.append(",");
-                outWriter.append(myList.get(i).getVolume());
-                outWriter.append("\n");
+        builder.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String email = input.getText().toString();
+
+                        if (email.length() > 0 && isValidEmail(email)) {
+                            new MimeSendTask(PreferencesActivity.this, email).execute();
+                            dialogInterface.dismiss();
+                        } else {
+                            new AlertDialog.Builder(PreferencesActivity.this)
+                                    .setTitle("Verify Input")
+                                    .setMessage("Please enter a valid e-mail address format")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                });
             }
-            outWriter.close();
+        });
 
-            fOut.flush();
-            fOut.close();
-        }
-        catch (IOException e)
-        {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-
-        Uri fileuri = Uri.fromFile(file);
-
-        //String[] toAddress = {"Default"};
-        Intent sendEmail = new Intent(Intent.ACTION_SEND);
-        sendEmail.setType("message/rfc822");
-        //sendEmail.putExtra(Intent.EXTRA_EMAIL, toAddress);
-        sendEmail.putExtra(Intent.EXTRA_SUBJECT, "Ministocks: Data CSV file Import/Export[Work In Progress]");
-        sendEmail.putExtra(Intent.EXTRA_TEXT, "You will find your requested data csv file attached to this email!");
-        sendEmail.putExtra(Intent.EXTRA_STREAM, fileuri);
-        startActivity(sendEmail);
+        builder.show();
     }
 
     private void showChangeLog() {

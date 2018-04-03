@@ -8,14 +8,19 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import nitezh.ministock.R;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
+
+import static nitezh.ministock.activities.GlobalWidgetData.interval;
 
 /**
  * Created by nicholasfong on 2018-02-21.
@@ -24,18 +29,86 @@ import nitezh.ministock.activities.widget.WidgetProviderBase;
 public class ChartActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
+    private final String alphavantagekey = "ZKD8M6L9CEQAK89H";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        URL url = null;
-        Bitmap bmImg = null;
+        int interval = GlobalWidgetData.getInterval();
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
-        Spanned html = Html.fromHtml("Sample Chart View (Row " + String.valueOf(position) + ") <br /><br />");
+        String symbol = GlobalWidgetData.getList().get(position).getSymbol();
+        Spanned html = Html.fromHtml("Graph of " + symbol + " <br /><br />");
         TextView text = (TextView) findViewById(R.id.chart_text);
         text.setText(html);
-        new ImageSnatcher( (ImageView) findViewById(R.id.chart_img) ).execute("https://www.codeproject.com/KB/graphics/zedgraph/example_1.png");
+        String intervalStr = intervalSwitcher(interval);
+        Log.i( "urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey );
+
+
+        List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey, interval);
+
+        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int interval = GlobalWidgetData.getInterval();
+        int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
+        Button btn7day = (Button) findViewById(R.id.btn_7day);
+        Button btn52wk = (Button) findViewById(R.id.btn_52wk);
+        Button btn12mth = (Button) findViewById(R.id.btn_12mth);
+        String symbol = GlobalWidgetData.getList().get(position).getSymbol();
+
+        btn7day.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GlobalWidgetData.setInterval(1);
+                finish();
+                startActivity(getIntent());
+                //recreate();
+
+                // Log.i("TEST PRINT", "WE CLICKED 7 DAY");
+            }
+        });
+        btn52wk.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GlobalWidgetData.setInterval(2);
+                finish();
+                startActivity(getIntent());
+                //recreate();
+
+                // Log.i("TEST PRINT", "WE CLICKED 52 WK");
+            }
+        });
+        btn12mth.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GlobalWidgetData.setInterval(3);
+                finish();
+                startActivity(getIntent());
+            }
+        });
+        String intervalStr = intervalSwitcher(interval);
+        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey);
+
+
+        List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey, interval);
+
+        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
+    }
+
+    public String intervalSwitcher(int interval) {
+        if (interval == 1) {
+            return "DAILY";
+        } else if (interval == 3) {
+            return "MONTHLY";
+        } else {
+            return "WEEKLY";
+        }
     }
 
     @Override
@@ -44,6 +117,7 @@ public class ChartActivity extends Activity {
         finish();
     }
 }
+
 class ImageSnatcher extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 

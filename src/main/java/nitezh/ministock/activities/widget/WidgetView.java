@@ -36,12 +36,23 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
 import nitezh.ministock.WidgetProvider;
 import nitezh.ministock.activities.GlobalWidgetData;
-import nitezh.ministock.activities.PreferencesActivity;
-import nitezh.ministock.domain.*;
+import nitezh.ministock.domain.AndroidWidgetRepository;
+import nitezh.ministock.domain.PortfolioStock;
+import nitezh.ministock.domain.PortfolioStockRepository;
+import nitezh.ministock.domain.StockQuote;
+import nitezh.ministock.domain.Widget;
+import nitezh.ministock.domain.WidgetRepository;
+import nitezh.ministock.domain.WidgetStock;
 import nitezh.ministock.utils.CurrencyTools;
 import nitezh.ministock.utils.NumberTools;
 import nitezh.ministock.utils.ReflectionTools;
@@ -86,7 +97,7 @@ public class WidgetView {
                 PreferenceStorage.getInstance(context), widgetRepository).getStocksForSymbols(symbols);
         this.hasPortfolioData = !portfolioStocks.isEmpty();
 
-        this.remoteViews = new RemoteViews(context.getPackageName(),R.layout.bonobo_widget_layout);
+        this.remoteViews = new RemoteViews(context.getPackageName(), R.layout.bonobo_widget_layout);
         this.enabledViews = this.calculateEnabledViews(this.widget);
     }
 
@@ -127,8 +138,7 @@ public class WidgetView {
         return views;
     }
 
-    private RemoteViews getStockChartViews(Widget widget, String packageName)
-    {
+    private RemoteViews getStockChartViews(Widget widget, String packageName) {
         // Get the background drawable
         String backgroundStyle = widget.getBackgroundStyle();
         RemoteViews views;
@@ -203,7 +213,7 @@ public class WidgetView {
         stockIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, this.widget.getId());
         stockIntent.setAction("POP_CHART");
         this.remoteViews.setPendingIntentTemplate(R.id.widgetCollectionList,
-                PendingIntent.getBroadcast(context, this.widget.getId(), stockIntent, 0));
+                PendingIntent.getBroadcast(this.context, this.widget.getId(), stockIntent, 0));
     }
 
     private HashMap<WidgetProviderBase.ViewType, Boolean> getEnabledViews() {
@@ -504,7 +514,7 @@ public class WidgetView {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
 
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        this.remoteViews.setRemoteAdapter( R.id.widgetCollectionList, intent);
+        this.remoteViews.setRemoteAdapter(R.id.widgetCollectionList, intent);
 
         // Updates the widget ListView immediately
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

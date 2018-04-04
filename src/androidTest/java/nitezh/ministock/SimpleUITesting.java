@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Created by Gurkomal Rao, Jefferson Casimir, Nicholas Fong on 3/14/2018.
+ * Tests are done using UI Automator
  */
 
 @RunWith(AndroidJUnit4.class)

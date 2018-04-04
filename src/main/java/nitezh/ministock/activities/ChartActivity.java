@@ -40,6 +40,7 @@ public class ChartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_chart_layout);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
+        GlobalWidgetData.initXMLForRss(symbol);
         this.symbol = symbol;
         Spanned html = Html.fromHtml("Graph of " + symbol + " <br /><br />");
         TextView text = (TextView) findViewById(R.id.chart_text);

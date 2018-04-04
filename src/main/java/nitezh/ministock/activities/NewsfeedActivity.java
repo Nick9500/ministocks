@@ -1,22 +1,19 @@
 package nitezh.ministock.activities;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
+
+import android.text.method.ScrollingMovementMethod;
+
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.List;
 
-//import nitezh.ministock.R;
-import at.theengine.android.simple_rss2_android.RSSItem;
-import at.theengine.android.simple_rss2_android.SimpleRss2Parser;
-import at.theengine.android.simple_rss2_android.SimpleRss2ParserCallback;
+import java.util.ArrayList;
 import nitezh.ministock.R;
-import nitezh.ministock.activities.widget.WidgetProviderBase;
+import nitezh.ministock.dataaccess.HandleXML;
+import nitezh.ministock.dataaccess.RssItem;
 
 /**
  * Created by nicholasfong on 2018-03-30.
@@ -26,30 +23,29 @@ public class NewsfeedActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
     public static String SYMBOL = "";
+    public static HandleXML obj = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String url = "http://finance.yahoo.com/rss/headline?s=MSFT";
-        SimpleRss2Parser parser = new SimpleRss2Parser(url,
-                new SimpleRss2ParserCallback() {
-                    @Override
-                    public void onFeedParsed(List<RSSItem> items) {
-                        for(int i = 0; i < items.size(); i++){
-                            Log.i("SimpleRss2ParserDemo",items.get(i).getTitle());
-                            System.out.println(items.get(i).getTitle());
-                        }
-                    }
-                    @Override
-                    public void onError(Exception ex) {
-                        Toast.makeText(NewsfeedActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-        Spanned html = Html.fromHtml("Test of " + SYMBOL + " <br /><br />");
-        TextView text = (TextView) findViewById(R.id.news_text);
-        text.setText(html);
-        parser.parseAsync();
         setContentView(R.layout.bonobo_news_layout);
+        TextView text1 = (TextView) findViewById(R.id.news_text1);
+        text1.setTextColor(Color.parseColor("#00FFFF"));
+        text1.setMovementMethod(new ScrollingMovementMethod());
+        obj = GlobalWidgetData.getXMLObj();
+
+        ArrayList<RssItem> list = obj.getRssList();
+        String testOut = "";
+        int count = 0;
+        for (RssItem i : list) {
+            Log.i("onCreate test: ", "count:" + count + " " + i.toString());
+            testOut = testOut + rssStringUnit(i.getTitle(), i.getDescription(), i.getLink());
+        }
+        text1.setText(testOut);
+    }
+
+    public String rssStringUnit(String tit, String date, String link){
+            String toReturn = tit + date + link + " ";
+            return toReturn;
     }
 }

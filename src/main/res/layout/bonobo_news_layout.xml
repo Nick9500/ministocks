@@ -5,7 +5,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/news_text"/>
-
-
+        android:id="@+id/news_text1"
+        android:maxLines = "100000"
+        android:scrollbars = "vertical"/>
 </LinearLayout>

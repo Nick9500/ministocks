@@ -4,15 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.utils.Cache;
 import nitezh.ministock.utils.UrlDataTools;
 
@@ -30,37 +23,6 @@ public class AlphaVantageRepository {
     AlphaVantageRepository(FxChangeRepository fxChangeRepository) {
         this.fxChangeRepository = fxChangeRepository;
     }
-
-    /*public HashMap<String, StockQuote> getQuotes(Cache cache, String symbols) {
-        HashMap<String, StockQuote> quotes = new HashMap<>();
-        HashMap<String, String> fxChanges = this.fxChangeRepository.getChanges(cache, symbols);
-        JSONArray jsonArray;
-        JSONObject quoteJson;
-
-        try {
-            jsonArray = this.retrieveQuotesAsJson(cache, symbols);
-            if (jsonArray != null) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    quoteJson = jsonArray.getJSONObject(i);
-                    StockQuote quote = new StockQuote(
-                            quoteJson.optString("symbol"),
-                            quoteJson.optString("price"),
-                            quoteJson.optString("change"),
-                            quoteJson.optString("percent"),
-                            quoteJson.optString("exchange"),
-                            quoteJson.optString("volume"),
-                            quoteJson.optString("name"),
-                            fxChanges.get(quoteJson.optString("symbol")),
-                            Locale.US);
-                    quotes.put(quote.getSymbol(), quote);
-                }
-            }
-        } catch (JSONException e) {
-            return null;
-        }
-
-        return quotes;
-    }*/
 
     //for regular stock exchange
     JSONArray retrieveQuotesAsJson(Cache cache, String timeInterval, String symbols) throws JSONException {
@@ -86,7 +48,6 @@ public class AlphaVantageRepository {
 
         return quotes;
     }
-
 
     //For Crypto Currency
     JSONArray retrieveQuotesAsJson(Cache cache, String timeInterval, String symbols, String market) throws JSONException {

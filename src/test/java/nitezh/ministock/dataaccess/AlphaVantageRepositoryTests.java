@@ -3,7 +3,6 @@ package nitezh.ministock.dataaccess;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +11,6 @@ import java.util.List;
 
 import nitezh.ministock.mocks.MockCache;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotEquals;
@@ -37,7 +35,7 @@ public class AlphaVantageRepositoryTests {
         vantageList = null;
         FxChangeRepository fxRepository = new FxChangeRepository();
             this.alphaVantageRepository = new AlphaVantageRepository(fxRepository);
-}
+    }
 
     @Test
     public void retrieveRegularStockValues() throws JSONException{
@@ -48,7 +46,6 @@ public class AlphaVantageRepositoryTests {
             assertNotNull(vantageList);
             assertNotEquals(0, vantageList.length());
             JSONObject jsonObject = vantageList.optJSONObject(0);                    //validate if all fields of a specific date are properly received
-
             assertFalse(jsonObject.optString("date").isEmpty());
             assertFalse(jsonObject.optString("open").isEmpty());
             assertFalse(jsonObject.optString("high").isEmpty());
@@ -79,8 +76,6 @@ public class AlphaVantageRepositoryTests {
             assertTrue(jsonObject.optString("invalid_field").isEmpty());
         }
     }
-
-
 
     private JSONArray returnJSONArray(String timeInterval, String symbols) throws JSONException{
         return alphaVantageRepository.retrieveQuotesAsJson(new MockCache(), timeInterval, symbols);

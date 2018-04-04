@@ -46,10 +46,53 @@ class StockSuggestions {
 
     private static final String BASE_URL = "https://s.yimg.com/aq/autoc?callback=YAHOO.Finance.SymbolSuggest.ssCallback&region=US&lang=en-US&query=";
     private static final Pattern PATTERN_RESPONSE = Pattern.compile("YAHOO\\.Finance\\.SymbolSuggest\\.ssCallback\\((\\{.*?\\})\\)");
+    private static final String CRYPTO_BASE_URL = "https://api.coinmarketcap.com/v1/ticker/";
 
     static List<Map<String, String>> getSuggestions(String query) {
         List<Map<String, String>> suggestions = new ArrayList<>();
+        //List<Map<String, String>> cryptoSymbols = new ArrayList<>();
         String response;
+
+
+            String url = CRYPTO_BASE_URL;
+            Cache cache = new StorageCache(null);
+            response = UrlDataTools.getCachedUrlData(url, cache, 86400);
+
+
+
+        // Return if empty response
+        if (response == null || response.equals("")) {
+            return suggestions;
+        }
+
+            try {
+                JSONArray jsonA = new JSONArray(response);
+
+                for (int i = 0; i < jsonA.length(); i++) {
+
+                    Map<String, String> suggestion = new HashMap<>();
+                    suggestion.put("symbol", jsonA.getJSONObject(i).getString("symbol"));
+                    suggestion.put("name", jsonA.getJSONObject(i).getString("name"));
+                    suggestions.add(suggestion);
+                }
+
+               /* for (int i = 0; i < jsonA.length(); i++) {
+                    Map<String, String> suggestion = new HashMap<>();
+                    JSONObject jsonO = jsonA.getJSONObject(i);
+                    suggestion.put("symbol", jsonO.getString("symbol"));
+                    suggestion.put("name", jsonO.getString("name"));
+                    suggestions.add(suggestion);
+                }*/
+                return suggestions;
+
+            } catch (JSONException ignored) {
+            }
+
+
+
+
+        /*
+
         try {
             String url = BASE_URL + URLEncoder.encode(query, "UTF-8");
             Cache cache = new StorageCache(null);
@@ -83,6 +126,8 @@ class StockSuggestions {
             } catch (JSONException ignored) {
             }
         }
+        */
         return suggestions;
     }
+
 }

@@ -45,7 +45,7 @@ public class NewsfeedActivity extends Activity {
     }
 
     public String rssStringUnit(String tit, String date, String link){
-            String toReturn = tit + date + link + " ";
+            String toReturn = tit + ",  "+ date + " " + link + " ";
             return toReturn;
     }
 }

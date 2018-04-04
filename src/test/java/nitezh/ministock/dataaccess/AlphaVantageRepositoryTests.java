@@ -14,6 +14,7 @@ import nitezh.ministock.mocks.MockCache;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -54,6 +55,7 @@ public class AlphaVantageRepositoryTests {
             assertFalse(jsonObject.optString("low").isEmpty());
             assertFalse(jsonObject.optString("close").isEmpty());
             assertFalse(jsonObject.optString("volume").isEmpty());
+            assertTrue(jsonObject.optString("invalid_field").isEmpty());
         }
     }
 
@@ -74,6 +76,7 @@ public class AlphaVantageRepositoryTests {
             assertFalse(jsonObject.optString("close").isEmpty());
             assertFalse(jsonObject.optString("volume").isEmpty());
             assertFalse(jsonObject.optString("market cap").isEmpty());
+            assertTrue(jsonObject.optString("invalid_field").isEmpty());
         }
     }
 

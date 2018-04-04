@@ -208,14 +208,14 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                     weekCounter++;
                 }
             } else if (this.interval == 4) /* RSI Graph Chosen */ {
-                // Get a handle on Weekly closing values
+                // Get a handle on RSI closing values
                 JsonObject RSIObj = rootObj.getAsJsonObject("Technical Analysis: RSI");
 
                 Set<Map.Entry<String, JsonElement>> entries = RSIObj.entrySet();
                 int RSICounter = 0;
 
                 for (Map.Entry<String, JsonElement> entry : entries) {
-                    if (RSICounter <= 51) {
+                    if (RSICounter <= 30) {
                         JsonObject weeklyStats = entry.getValue().getAsJsonObject();
                         closingValuesWeekly.add(weeklyStats.getAsJsonPrimitive("RSI")
                                 .toString().replace("\"", ""));
@@ -227,7 +227,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                     RSICounter++;
                 }
             } else /* MACD Graph Chosen*/ {
-                // Get a handle on Weekly closing values
+                // Get a handle on MACD closing values
                 JsonObject MACDObj = rootObj.getAsJsonObject("Technical Analysis: MACD");
 
                 Set<Map.Entry<String, JsonElement>> entries = MACDObj.entrySet();

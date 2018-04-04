@@ -122,12 +122,12 @@ public class ChartActivity extends Activity {
 
         if (interval == 4) {
             List<String> RSIprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=RSI&symbol="
-                    + symbol + "&interval=weekly&time_period=14&series_type=close&apikey=" + alphavantagekey, interval);
+                    + symbol + "&interval=daily&time_period=14&series_type=close&apikey=" + alphavantagekey, interval);
 
             new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(RSIprices));
         } else if (interval == 5) {
             List<String> MACDprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=MACD&symbol="
-                    + symbol + "&interval=weekly&&series_type=close&apikey=demo" + alphavantagekey, interval);
+                    + symbol + "&interval=weekly&&series_type=close&apikey=" + alphavantagekey, interval);
 
             new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(MACDprices));
         } else {

@@ -63,28 +63,6 @@ public class ChartActivity extends Activity {
         Button btnRSI = (Button) findViewById(R.id.btn_RSI);
         Button btnMACD = (Button) findViewById(R.id.btn_MACD);
 
-        btnRSI.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                GlobalWidgetData.setInterval(4);
-                finish();
-                startActivity(getIntent());
-
-
-                Log.i("TEST PRINT", "WE CLICKED RSI GRAPH");
-            }
-        });
-
-        btnMACD.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                GlobalWidgetData.setInterval(5);
-                finish();
-                startActivity(getIntent());
-
-
-                Log.i("TEST PRINT", "WE CLICKED MACD GRAPH");
-            }
-        });
-
         // Buttons Related to Intervals
         Button btn7day = (Button) findViewById(R.id.btn_7day);
         Button btn52wk = (Button) findViewById(R.id.btn_52wk);
@@ -119,33 +97,54 @@ public class ChartActivity extends Activity {
                 startActivity(getIntent());
             }
         });
+        btnRSI.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GlobalWidgetData.setInterval(4);
+                finish();
+                startActivity(getIntent());
+
+
+                Log.i("TEST PRINT", "WE CLICKED RSI GRAPH");
+            }
+        });
+
+        btnMACD.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GlobalWidgetData.setInterval(5);
+                finish();
+                startActivity(getIntent());
+
+
+                Log.i("TEST PRINT", "WE CLICKED MACD GRAPH");
+            }
+        });
 
         if (interval == 4 || interval == 5) {
             String graphFct = switchGraphFct(interval);
             String graphParam = switchGraphParam(interval);
 
 
-            List<String> RSIprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=" + graphFct + "&symbol="
+            List<String> graphPrices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=" + graphFct + "&symbol="
                     + symbol + graphParam + "&series_type=close&apikey=" + alphavantagekey, interval);
 
-            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(RSIprices));
-        } /* else if (interval == 5) {
+            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(graphPrices));
+        }
+        /* else if (interval == 5) {
             List<String> MACDprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=MACD&symbol="
                     + symbol + "&interval=weekly&series_type=close&apikey=" + alphavantagekey, interval);
 
             new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(MACDprices)); */
-     else
-        {
-        String intervalStr = intervalSwitcher(interval);
-        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
-                + symbol + "&apikey=" + alphavantagekey);
+        else {
+            String intervalStr = intervalSwitcher(interval);
+            Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                    + symbol + "&apikey=" + alphavantagekey);
 
 
-        List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
-                + symbol + "&apikey=" + alphavantagekey, interval);
+            List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                    + symbol + "&apikey=" + alphavantagekey, interval);
 
-        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
-    }
+            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
+        }
 
     }
 
@@ -170,8 +169,7 @@ public class ChartActivity extends Activity {
     public String switchGraphParam(int interval) {
         if (interval == 4) {
             return "&interval=daily&time_period=14";
-        }
-        else {
+        } else {
             return "&interval=weekly";
         }
     }

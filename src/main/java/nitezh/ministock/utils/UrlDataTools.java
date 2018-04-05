@@ -47,7 +47,7 @@ public class UrlDataTools {
         return builder.toString();
     }
 
-    static String urlToString(String url) throws IOException {
+    public static String urlToString(String url) throws IOException {
         URLConnection connection = new URL(url).openConnection();
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(60000);

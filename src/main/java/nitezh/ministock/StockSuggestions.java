@@ -112,14 +112,10 @@ class StockSuggestions {
                     }
                 }
             }
-
             return suggestions;
-
         } catch (JSONException ignored) {
         }
-
         return suggestions;
-
     }
 
 }

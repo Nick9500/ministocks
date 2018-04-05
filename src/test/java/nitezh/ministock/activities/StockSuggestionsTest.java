@@ -1,6 +1,9 @@
 package nitezh.ministock.activities;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,12 +24,14 @@ import static org.junit.Assert.assertEquals;
 public class StockSuggestionsTest {
     String btcSymbol;
     String userInput;
+    JSONArray cryptoJson;
 
     @Before
     public void setUp()
     {
         userInput = "Bt";
         btcSymbol = "BTC";
+        cryptoJson = null;
     }
 
     @Test
@@ -45,6 +50,7 @@ public class StockSuggestionsTest {
 
         // Act
         String result = UrlDataTools.urlToString(url).substring(0, 85);
+        String result2 = UrlDataTools.getUrlData(url).substring(0, 85);
 
         // Assert
         String expected = "[\n" +
@@ -53,5 +59,26 @@ public class StockSuggestionsTest {
                 "        \"name\": \"Bitcoin\", \n" +
                 "        \"symbol\": \"BTC\"";
         assertEquals(expected, result);
+        assertEquals(expected, result2);
+    }
+
+    @Test
+    public void retriveStockInfoFromJSON() throws JSONException {
+        //set up
+        String url = "https://api.coinmarketcap.com/v1/ticker/bitcoin/";
+        // Act
+        String result = UrlDataTools.getUrlData(url);
+        cryptoJson = new JSONArray(result);
+
+        JSONObject jsonObject = cryptoJson.optJSONObject(0);
+        System.out.println(jsonObject.optString("name"));
+        assertTrue(!jsonObject.optString("name").isEmpty());
+        assertEquals("Bitcoin", jsonObject.optString("name"));
+        System.out.println(jsonObject.optString("symbol"));
+        assertTrue(!jsonObject.optString("symbol").isEmpty());
+        assertEquals("BTC", jsonObject.optString("symbol"));
+
+
+
     }
 }

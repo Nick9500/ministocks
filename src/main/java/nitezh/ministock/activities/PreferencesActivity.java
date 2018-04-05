@@ -132,6 +132,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private int mHour = 0;
     private int mMinute = 0;
 
+    private  List<String> csvSymbols;
+
     public GlobalWidgetData myData = new GlobalWidgetData();
 
     private boolean isValidEmail(String emailStr) {
@@ -958,16 +960,12 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 "Rate it!", "Close", callable, null);
     }
 
-    private void importStocks() throws IOException {
-
-        Widget widget;
-        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
-
+    private List <String> openStocksFile()throws IOException
+    {
         List <String> symbols = new ArrayList<String>();
 
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
-        if(file.exists())
-        {
+        if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
 
             InputStreamReader isr = new InputStreamReader(fis);
@@ -979,36 +977,45 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 symbols.add(line);
             }
             bufferedReader.close();
-
-            WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
-            Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
-            StockQuoteRepository quoteRepository = new StockQuoteRepository(
-                    PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
-                    widgetRepository);
-
-            widget = widgetRepository.getWidget(mAppWidgetId);
-            HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(symbols);
-            String time = quoteRepository.getTimeStamp();
-            quoteRepository.saveQuotes(stockQuotes, time);
-            WidgetView widgetView = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, time);
-            myStockList.clear();
-            for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
-            {
-                WidgetRow row = new WidgetRow(widget);
-                row.setSymbol(entry.getKey());
-                row.setPrice(entry.getValue().getPrice());
-                row.setStockInfo(entry.getValue().getPercent());
-                myStockList.add(row);
-
-            }
-            myData.setGlobalList(myStockList);
-
         }
         else
         {
             Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
                     Toast.LENGTH_LONG).show();
         }
+        return symbols;
+    }
+
+    private void importStocks() throws IOException {
+
+        Widget widget;
+        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
+
+        csvSymbols = openStocksFile();
+
+
+        WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
+        Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
+        StockQuoteRepository quoteRepository = new StockQuoteRepository(
+                PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
+                widgetRepository);
+
+        widget = widgetRepository.getWidget(mAppWidgetId);
+        HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(csvSymbols);
+        String time = quoteRepository.getTimeStamp();
+        quoteRepository.saveQuotes(stockQuotes, time);
+        WidgetView widgetView = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, time);
+        myStockList.clear();
+        for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
+        {
+            WidgetRow row = new WidgetRow(widget);
+            row.setSymbol(entry.getKey());
+            row.setPrice(entry.getValue().getPrice());
+            row.setStockInfo(entry.getValue().getPercent());
+            myStockList.add(row);
+
+        }
+        myData.setGlobalList(myStockList);
 
          Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
@@ -1021,6 +1028,4 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widgetCollectionList);
 
     }
-
-
 }

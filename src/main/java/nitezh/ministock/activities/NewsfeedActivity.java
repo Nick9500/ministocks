@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.text.Html;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 
 import android.util.Log;
@@ -41,11 +44,12 @@ public class NewsfeedActivity extends Activity {
             Log.i("onCreate test: ", "count:" + count + " " + i.toString());
             testOut = testOut + rssStringUnit(i.getTitle(), i.getDescription(), i.getLink());
         }
-        text1.setText(testOut);
+        Spanned html = Html.fromHtml( testOut );
+        text1.setText(html);
     }
 
     public String rssStringUnit(String tit, String date, String link){
-            String toReturn = tit + ",  "+ date + " " + link + " ";
+            String toReturn = "<p><b>" + tit + "</b><br/>  "+ date + "<br/>" + link + "</p>";
             return toReturn;
     }
 }

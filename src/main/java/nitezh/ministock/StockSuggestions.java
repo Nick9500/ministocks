@@ -81,7 +81,7 @@ class StockSuggestions {
                 String symbol = cryptoJson.getJSONObject(i).getString("symbol");
 
                 Matcher cryptoMatcher = STOCK_REGEX.matcher(symbol);
-                if (cryptoMatcher.matches()) {
+                if (cryptoMatcher.matches() && query.length() > 0) {
                     Map<String, String> suggestion = new HashMap<>();
                     suggestion.put("symbol", symbol);
                     suggestion.put("name", cryptoJson.getJSONObject(i).getString("name"));

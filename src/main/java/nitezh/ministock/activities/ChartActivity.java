@@ -120,27 +120,33 @@ public class ChartActivity extends Activity {
             }
         });
 
-        if (interval == 4) {
-            List<String> RSIprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=RSI&symbol="
-                    + symbol + "&interval=daily&time_period=14&series_type=close&apikey=" + alphavantagekey, interval);
+        if (interval == 4 || interval == 5) {
+            String graphFct = switchGraphFct(interval);
+            String graphParam = switchGraphParam(interval);
+
+
+            List<String> RSIprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=" + graphFct + "&symbol="
+                    + symbol + graphParam + "&series_type=close&apikey=" + alphavantagekey, interval);
 
             new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(RSIprices));
-        } else if (interval == 5) {
+        } /* else if (interval == 5) {
             List<String> MACDprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=MACD&symbol="
-                    + symbol + "&interval=weekly&&series_type=close&apikey=" + alphavantagekey, interval);
+                    + symbol + "&interval=weekly&series_type=close&apikey=" + alphavantagekey, interval);
 
-            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(MACDprices));
-        } else {
-            String intervalStr = intervalSwitcher(interval);
-            Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
-                    + symbol + "&apikey=" + alphavantagekey);
+            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(MACDprices)); */
+     else
+        {
+        String intervalStr = intervalSwitcher(interval);
+        Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey);
 
 
-            List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
-                    + symbol + "&apikey=" + alphavantagekey, interval);
+        List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
+                + symbol + "&apikey=" + alphavantagekey, interval);
 
-            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
-        }
+        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
+    }
+
     }
 
     public String intervalSwitcher(int interval) {
@@ -150,6 +156,23 @@ public class ChartActivity extends Activity {
             return "MONTHLY";
         } else {
             return "WEEKLY";
+        }
+    }
+
+    public String switchGraphFct(int interval) {
+        if (interval == 4) {
+            return "RSI";
+        } else {
+            return "MACD";
+        }
+    }
+
+    public String switchGraphParam(int interval) {
+        if (interval == 4) {
+            return "&interval=daily&time_period=14";
+        }
+        else {
+            return "&interval=weekly";
         }
     }
 

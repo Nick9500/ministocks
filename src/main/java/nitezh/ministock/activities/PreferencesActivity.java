@@ -986,14 +986,9 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         return symbols;
     }
 
-    private void importStocks() throws IOException {
-
+    private void creatQuotesFromCSV(List<String> csvSymbols)
+    {
         Widget widget;
-        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
-
-        csvSymbols = openStocksFile();
-
-
         WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
         Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
         StockQuoteRepository quoteRepository = new StockQuoteRepository(
@@ -1013,11 +1008,19 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             row.setPrice(entry.getValue().getPrice());
             row.setStockInfo(entry.getValue().getPercent());
             myStockList.add(row);
-
         }
         myData.setGlobalList(myStockList);
+    }
 
-         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
+    private void importStocks() throws IOException {
+
+        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
+
+        csvSymbols = openStocksFile();
+
+        creatQuotesFromCSV(csvSymbols);
+
+        Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));

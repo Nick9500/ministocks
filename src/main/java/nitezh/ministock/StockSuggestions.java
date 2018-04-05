@@ -50,62 +50,41 @@ class StockSuggestions {
 
     static List<Map<String, String>> getSuggestions(String query) {
         List<Map<String, String>> suggestions = new ArrayList<>();
-        //List<Map<String, String>> cryptoSymbols = new ArrayList<>();
+        List<Map<String, String>> cryptoSymbols = new ArrayList<>();
         String response;
-
-
-            String url = CRYPTO_BASE_URL;
-            Cache cache = new StorageCache(null);
-            response = UrlDataTools.getCachedUrlData(url, cache, 86400);
-
-
-
-        // Return if empty response
-        if (response == null || response.equals("")) {
-            return suggestions;
-        }
-
-            try {
-                JSONArray jsonA = new JSONArray(response);
-
-                for (int i = 0; i < jsonA.length(); i++) {
-
-                    Map<String, String> suggestion = new HashMap<>();
-                    suggestion.put("symbol", jsonA.getJSONObject(i).getString("symbol"));
-                    suggestion.put("name", jsonA.getJSONObject(i).getString("name"));
-                    suggestions.add(suggestion);
-                }
-
-               /* for (int i = 0; i < jsonA.length(); i++) {
-                    Map<String, String> suggestion = new HashMap<>();
-                    JSONObject jsonO = jsonA.getJSONObject(i);
-                    suggestion.put("symbol", jsonO.getString("symbol"));
-                    suggestion.put("name", jsonO.getString("name"));
-                    suggestions.add(suggestion);
-                }*/
-                return suggestions;
-
-            } catch (JSONException ignored) {
-            }
-
-
-
-
-        /*
+        String crypto_response;
 
         try {
-            String url = BASE_URL + URLEncoder.encode(query, "UTF-8");
             Cache cache = new StorageCache(null);
-            response = UrlDataTools.getCachedUrlData(url, cache, 86400);
+            String crypto_url = CRYPTO_BASE_URL;
+            crypto_response = UrlDataTools.getCachedUrlData(crypto_url, cache, 86400);
 
+            String url = BASE_URL + URLEncoder.encode(query, "UTF-8");
+            response = UrlDataTools.getCachedUrlData(url, cache, 86400);
         } catch (UnsupportedEncodingException e1) {
             response = null;
+            crypto_response = null;
         }
+
 
         // Return if empty response
         if (response == null || response.equals("")) {
             return suggestions;
         }
+        try {
+            JSONArray jsonA = new JSONArray(crypto_response);
+
+            for (int i = 0; i < jsonA.length(); i++) {
+
+                Map<String, String> suggestion = new HashMap<>();
+                suggestion.put("symbol", jsonA.getJSONObject(i).getString("symbol"));
+                suggestion.put("name", jsonA.getJSONObject(i).getString("name"));
+                suggestions.add(suggestion);
+            }
+
+        } catch (JSONException ignored) {
+        }
+
         Matcher m = PATTERN_RESPONSE.matcher(response);
         if (m.find()) {
             response = m.group(1);
@@ -121,13 +100,13 @@ class StockSuggestions {
                     suggestion.put("name", jsonO.getString("name"));
                     suggestions.add(suggestion);
                 }
-                return suggestions;
 
             } catch (JSONException ignored) {
             }
         }
-        */
+
         return suggestions;
+
     }
 
 }

@@ -54,7 +54,7 @@ public class UrlDataTools {
         return inputStreamToString(connection.getInputStream());
     }
 
-    private static String getUrlData(String url) {
+    public static String getUrlData(String url) {
         // Ensure we always request some data
         if (!url.contains("INDU")) {
             url = url.replace("&s=", "&s=INDU+");

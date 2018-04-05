@@ -75,9 +75,6 @@ public class ChartActivity extends Activity {
                 GlobalWidgetData.setInterval(1);
                 finish();
                 startActivity(getIntent());
-                //recreate();
-
-                // Log.i("TEST PRINT", "WE CLICKED 7 DAY");
             }
         });
         btn52wk.setOnClickListener(new View.OnClickListener() {
@@ -85,9 +82,6 @@ public class ChartActivity extends Activity {
                 GlobalWidgetData.setInterval(2);
                 finish();
                 startActivity(getIntent());
-                //recreate();
-
-                // Log.i("TEST PRINT", "WE CLICKED 52 WK");
             }
         });
         btn12mth.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +96,6 @@ public class ChartActivity extends Activity {
                 GlobalWidgetData.setInterval(4);
                 finish();
                 startActivity(getIntent());
-
-
-                Log.i("TEST PRINT", "WE CLICKED RSI GRAPH");
             }
         });
 
@@ -113,9 +104,6 @@ public class ChartActivity extends Activity {
                 GlobalWidgetData.setInterval(5);
                 finish();
                 startActivity(getIntent());
-
-
-                Log.i("TEST PRINT", "WE CLICKED MACD GRAPH");
             }
         });
 
@@ -128,13 +116,7 @@ public class ChartActivity extends Activity {
                     + symbol + graphParam + "&series_type=close&apikey=" + alphavantagekey, interval);
 
             new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(graphPrices));
-        }
-        /* else if (interval == 5) {
-            List<String> MACDprices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=MACD&symbol="
-                    + symbol + "&interval=weekly&series_type=close&apikey=" + alphavantagekey, interval);
-
-            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(MACDprices)); */
-        else {
+        } else {
             String intervalStr = intervalSwitcher(interval);
             Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
                     + symbol + "&apikey=" + alphavantagekey);
@@ -148,6 +130,7 @@ public class ChartActivity extends Activity {
 
     }
 
+    // Helper methods for choosing Graph types / functions
     public String intervalSwitcher(int interval) {
         if (interval == 1) {
             return "DAILY";
@@ -177,6 +160,7 @@ public class ChartActivity extends Activity {
     @Override
     public void onStop() {
         super.onStop();
+        GlobalWidgetData.setInterval(2);
         finish();
     }
 

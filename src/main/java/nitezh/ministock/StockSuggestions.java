@@ -51,7 +51,6 @@ class StockSuggestions {
     static List<Map<String, String>> getSuggestions(String query) {
         final Pattern STOCK_REGEX = Pattern.compile("^" + query + "[A-Z0-9]*", Pattern.CASE_INSENSITIVE);
 
-
         List<Map<String, String>> suggestions = new ArrayList<>();
         String cryptoResponse, stockResponse;
 
@@ -120,6 +119,7 @@ class StockSuggestions {
         }
 
         return suggestions;
+
     }
 
 }

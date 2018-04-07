@@ -121,6 +121,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     public static int mAppWidgetId = 0;
     // Private
     private static boolean mPendingUpdate = false;
+    private static boolean importUpdate;
     private static String mSymbolSearchKey = "";
     private final String CHANGE_LOG = "";
 
@@ -851,23 +852,28 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             }
         }
     }
-/*
+
     @Override
     protected void onStop() {
         super.onStop();
         // Update the widget when we quit the preferences, and if the dirty,
         // flag is true then do a web update, otherwise do a regular update
-        if (mPendingUpdate) {
-            mPendingUpdate = false;
-            WidgetProviderBase.updateWidgets(getApplicationContext(),
-                    WidgetProviderBase.UpdateType.VIEW_UPDATE);
-        } else {
-            WidgetProviderBase.updateWidgetAsync(getApplicationContext(), mAppWidgetId,
-                    WidgetProviderBase.UpdateType.VIEW_NO_UPDATE);
+        if(importUpdate)
+        { importUpdate = false;
+            finish();}
+        else{
+            if (mPendingUpdate) {
+                mPendingUpdate = false;
+                WidgetProviderBase.updateWidgets(getApplicationContext(),
+                        WidgetProviderBase.UpdateType.VIEW_UPDATE);
+            } else {
+                WidgetProviderBase.updateWidgetAsync(getApplicationContext(), mAppWidgetId,
+                        WidgetProviderBase.UpdateType.VIEW_NO_UPDATE);
+            }
         }
         finish();
     }
-*/
+
     private void showHelpUsage() {
         String title = "Selecting widget views";
         String body = "The widget has multiple views that display different information.<br /><br />These views can be turned on from the AppWidgetProvider views menu in settings.<br /><br />Once selected, the views can be changed on your home screen by touching the right-side of the widget.<br /><br />If a stock does not have information for a particular view, then the daily percentage change will instead be displayed for that stock in blue.<br /><br /><b>Daily change %</b><br /><br />Shows the current stock price with the daily percentage change.<br /><br /><b>Daily change (DA)</b><br /><br />Shows the current stock price with the daily price change.<br /><br /><b>Total change % (PF T%)</b><br /><br />Shows the current stock price with the total percentage change from the buy price in the portfolio.<br /><br /><b>Total change (PF TA)</b><br /><br />Shows the current stock price with the total price change from the buy price in the portfolio.<br /><br /><b>Total change AER % (PF AER)</b><br /><br />Shows the current stock price with the annualised percentage change using the buy price in the portfolio.<br /><br /><b>P/L daily change % (P/L D%)</b><br /><br />Shows your current holding value with the daily percentage change.<br /><br /><b>P/L daily change (P/L DA)</b><br /><br />Shows your current holding value with the daily price change.<br /><br /><b>P/L total change % (P/L T%)</b><br /><br />Shows your current holding value with the total percentage change from the buy cost in the portfolio.<br /><br /><b>P/L total change (P/L TA)</b><br /><br />Shows your current holding value with the total value change from the buy cost in the portfolio.<br /><br /><b>P/L total change AER (P/L AER)</b><br /><br />Shows your current holding value with the annualised percentage change using the buy cost in the portfolio.";
@@ -964,7 +970,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private List <String> openStocksFile()throws IOException
     {
         List <String> symbols = new ArrayList<String>();
-/*
+
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
@@ -985,53 +991,35 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                     Toast.LENGTH_LONG).show();
         }
 
-  */    symbols.add("AMZN");
-        symbols.add("AAPL");
-        symbols.add("BABA");
         return symbols;
     }
 
     private void creatQuotesFromCSV(List<String> csvSymbols)
     {
-        Widget widget;
         int i = 1;
-        SharedPreferences preferences = getPreferenceScreen().getSharedPreferences();
+        myData.setImportSymbols(csvSymbols);
         WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
         Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
-
-        Cache cache = new StorageCache(storage);
         StockQuoteRepository quoteRepository = new StockQuoteRepository(
                 PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
                 widgetRepository);
-        widget = widgetRepository.getWidget(mAppWidgetId);
         HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(csvSymbols);
         String quotesTimeStamp = quoteRepository.getTimeStamp();
         quoteRepository.saveQuotes(stockQuotes, quotesTimeStamp);
         WidgetView wv = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_UPDATE, stockQuotes, quotesTimeStamp);
+        SharedPreferences preferences = getPreferenceScreen().getSharedPreferences();
         myStockList.clear();
         Editor editor = preferences.edit();
         editor.clear();
         mPendingUpdate = true;
         for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
         {
-            //this.setPreference("Stock"+i, entry.getKey(), entry.getValue().getName());
-          //  WidgetRow row = new WidgetRow(widget);
-          //  row.setSymbol(entry.getKey());
-          //  row.setPrice(entry.getValue().getPrice());
-          //  row.setStockInfo(entry.getValue().getPercent());
-          //  myStockList.add(row);
-
-            editor.putString(entry.getKey(), entry.getValue().getName());
-            editor.apply();
-            i++;
+           editor.putString(entry.getKey(), entry.getValue().getName());
+           editor.apply();
+           i++;
         }
-        myData.setImportSymbols(csvSymbols);
+        wv.applyPendingChanges(mAppWidgetId);
 
-
-
-
-      //  WidgetProviderBase.applyUpdate(this.getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_UPDATE,
-        //        stockQuotes,  quotesTimeStamp);
     }
 
     private void importStocks() throws IOException {
@@ -1041,7 +1029,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         csvSymbols = openStocksFile();
 
         creatQuotesFromCSV(csvSymbols);
-
+        importUpdate = true;
         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 

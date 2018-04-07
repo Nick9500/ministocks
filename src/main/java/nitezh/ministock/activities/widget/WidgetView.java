@@ -73,7 +73,7 @@ public class WidgetView {
     private final RemoteViews remoteViews;
     private final Widget widget;
     private final boolean hasPortfolioData;
-    public final List<String> symbols;
+    public  List<String> symbols;
     private final HashMap<String, PortfolioStock> portfolioStocks;
     private final HashMap<String, StockQuote> quotes;
     private final UpdateType updateMode;
@@ -495,33 +495,21 @@ public class WidgetView {
         myStockList.clear();
 
         int lineNo = 0;
-        if (importSymbols.isEmpty()) {
-            for (String symbol : this.symbols) {
-                if (symbol.equals("")) {
-                    continue;
-                }
-
-                // Get the info for this quote
-                lineNo++;
-                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
-                myStockList.add(rowInfo);
-            }
-        }
-        else
+        if (!importSymbols.isEmpty())
         {
-            for (String symbol : importSymbols) {
-                if (symbol.equals("")) {
-                    continue;
-                }
-
-                // Get the info for this quote
-                lineNo++;
-                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
-                myStockList.add(rowInfo);
-            }
+            this.symbols = importSymbols;
         }
 
-
+        for (String symbol : this.symbols)
+        {
+            if (symbol.equals("")) {
+                continue;
+            }
+            // Get the info for this quote
+            lineNo++;
+            WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
+            myStockList.add(rowInfo);
+        }
         myData.setGlobalList(myStockList);
 
         Intent intent = new Intent(context, Bonobo_widget_service.class);
@@ -534,7 +522,6 @@ public class WidgetView {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widgetCollectionList);
     }
-
 
 
     private int getFooterColor() {

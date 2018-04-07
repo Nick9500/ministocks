@@ -859,20 +859,26 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         // Update the widget when we quit the preferences, and if the dirty,
         // flag is true then do a web update, otherwise do a regular update
         if(importUpdate)
-        { importUpdate = false;
-            finish();}
-        else{
-            if (mPendingUpdate) {
-                mPendingUpdate = false;
-                WidgetProviderBase.updateWidgets(getApplicationContext(),
-                        WidgetProviderBase.UpdateType.VIEW_UPDATE);
-            } else {
-                WidgetProviderBase.updateWidgetAsync(getApplicationContext(), mAppWidgetId,
-                        WidgetProviderBase.UpdateType.VIEW_NO_UPDATE);
-            }
+        {
+            importUpdate = false;
+            finish();
+        }
+        else{ pendingUpdate(); }
+    }
+
+    private void pendingUpdate()
+    {
+        if (mPendingUpdate) {
+            mPendingUpdate = false;
+            WidgetProviderBase.updateWidgets(getApplicationContext(),
+                    WidgetProviderBase.UpdateType.VIEW_UPDATE);
+        } else {
+            WidgetProviderBase.updateWidgetAsync(getApplicationContext(), mAppWidgetId,
+                    WidgetProviderBase.UpdateType.VIEW_NO_UPDATE);
         }
         finish();
     }
+
 
     private void showHelpUsage() {
         String title = "Selecting widget views";

@@ -100,6 +100,7 @@ import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.domain.StockQuoteRepository;
 import nitezh.ministock.domain.Widget;
 import nitezh.ministock.domain.WidgetRepository;
+import nitezh.ministock.utils.Cache;
 import nitezh.ministock.utils.DateTools;
 import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
@@ -963,7 +964,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private List <String> openStocksFile()throws IOException
     {
         List <String> symbols = new ArrayList<String>();
-
+/*
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
@@ -983,33 +984,54 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
                     Toast.LENGTH_LONG).show();
         }
+
+  */    symbols.add("AMZN");
+        symbols.add("AAPL");
+        symbols.add("BABA");
         return symbols;
     }
 
     private void creatQuotesFromCSV(List<String> csvSymbols)
     {
         Widget widget;
+        int i = 1;
+        SharedPreferences preferences = getPreferenceScreen().getSharedPreferences();
         WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
         Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
+
+        Cache cache = new StorageCache(storage);
         StockQuoteRepository quoteRepository = new StockQuoteRepository(
                 PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
                 widgetRepository);
-
         widget = widgetRepository.getWidget(mAppWidgetId);
         HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(csvSymbols);
-        String time = quoteRepository.getTimeStamp();
-        quoteRepository.saveQuotes(stockQuotes, time);
-        WidgetView widgetView = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, time);
+        String quotesTimeStamp = quoteRepository.getTimeStamp();
+        quoteRepository.saveQuotes(stockQuotes, quotesTimeStamp);
+        WidgetView wv = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_UPDATE, stockQuotes, quotesTimeStamp);
         myStockList.clear();
+        Editor editor = preferences.edit();
+        editor.clear();
+        mPendingUpdate = true;
         for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
         {
-            WidgetRow row = new WidgetRow(widget);
-            row.setSymbol(entry.getKey());
-            row.setPrice(entry.getValue().getPrice());
-            row.setStockInfo(entry.getValue().getPercent());
-            myStockList.add(row);
+            //this.setPreference("Stock"+i, entry.getKey(), entry.getValue().getName());
+          //  WidgetRow row = new WidgetRow(widget);
+          //  row.setSymbol(entry.getKey());
+          //  row.setPrice(entry.getValue().getPrice());
+          //  row.setStockInfo(entry.getValue().getPercent());
+          //  myStockList.add(row);
+
+            editor.putString(entry.getKey(), entry.getValue().getName());
+            editor.apply();
+            i++;
         }
-        myData.setGlobalList(myStockList);
+        myData.setImportSymbols(csvSymbols);
+
+
+
+
+      //  WidgetProviderBase.applyUpdate(this.getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_UPDATE,
+        //        stockQuotes,  quotesTimeStamp);
     }
 
     private void importStocks() throws IOException {

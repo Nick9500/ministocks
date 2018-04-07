@@ -73,7 +73,7 @@ public class WidgetView {
     private final RemoteViews remoteViews;
     private final Widget widget;
     private final boolean hasPortfolioData;
-    private final List<String> symbols;
+    public final List<String> symbols;
     private final HashMap<String, PortfolioStock> portfolioStocks;
     private final HashMap<String, StockQuote> quotes;
     private final UpdateType updateMode;
@@ -490,12 +490,12 @@ public class WidgetView {
     public void applyPendingChanges(int widgetId) {
         int widgetDisplay = this.getNextView(this.updateMode);
         this.clear();
-       // List<String> importSymbols = myData.getSymbols();
+        List<String> importSymbols = myData.getImportSymbols();
         // Reset list. Otherwise duplicates the entries
         myStockList.clear();
 
         int lineNo = 0;
-
+        if (importSymbols.isEmpty()) {
             for (String symbol : this.symbols) {
                 if (symbol.equals("")) {
                     continue;
@@ -506,6 +506,20 @@ public class WidgetView {
                 WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
                 myStockList.add(rowInfo);
             }
+        }
+        else
+        {
+            for (String symbol : importSymbols) {
+                if (symbol.equals("")) {
+                    continue;
+                }
+
+                // Get the info for this quote
+                lineNo++;
+                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
+                myStockList.add(rowInfo);
+            }
+        }
 
 
         myData.setGlobalList(myStockList);

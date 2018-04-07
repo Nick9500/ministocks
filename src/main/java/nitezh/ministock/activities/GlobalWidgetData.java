@@ -27,12 +27,22 @@ public class GlobalWidgetData extends Application {
 
     // Use in population of listview 
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
+    public static List<String> importSymbols = new ArrayList<>();
     public String urlString;
     public static int interval;
 
 
     public static List<WidgetRow> getList() {
         return myStockList;
+    }
+
+    public List<String> getImportSymbols() {
+        return importSymbols;
+    }
+
+    public void setImportSymbols(List<String> symbols)
+    {
+        this.importSymbols = symbols;
     }
 
     public void setGlobalList(List<WidgetRow> list) {

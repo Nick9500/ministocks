@@ -7,10 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
+import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.mocks.MockCache;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotEquals;
@@ -75,6 +79,39 @@ public class AlphaVantageRepositoryTests {
             assertFalse(jsonObject.optString("market cap").isEmpty());
             assertTrue(jsonObject.optString("invalid_field").isEmpty());
         }
+    }
+
+    @Test
+    public void getQuotes() throws JSONException{
+        // Arrange
+        String symbol ="BTC";
+        String market = "USD";
+
+        // Act
+        HashMap<String, StockQuote> stockQuotes = alphaVantageRepository.getQuotes(new MockCache(), symbol, market);
+
+        // Assert
+        assertEquals(1, stockQuotes.size());
+
+        StockQuote BTCQuote = stockQuotes.get("BTC");
+        assertEquals("BTC", BTCQuote.getSymbol());
+        /*assertTrue(Arrays.asList(
+                "NasdaqNM",
+                "NMS",
+                "Nasdaq Global Select",
+                "NasdaqGS"
+        ).contains(aaplQuote.getExchange()));
+        assertEquals("Apple Inc.", aaplQuote.getName());
+
+        StockQuote googQuote = stockQuotes.get("GOOG");
+        assertEquals("GOOG", googQuote.getSymbol());
+        assertTrue(Arrays.asList(
+                "NasdaqNM",
+                "NMS",
+                "Nasdaq Global Select",
+                "NasdaqGS"
+        ).contains(googQuote.getExchange()));
+        assertEquals("Alphabet Inc.", googQuote.getName());*/
     }
 
     private JSONArray returnJSONArray(String timeInterval, String symbols) throws JSONException{

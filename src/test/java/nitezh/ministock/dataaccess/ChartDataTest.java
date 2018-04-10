@@ -1,18 +1,14 @@
 package nitezh.ministock.dataaccess;
 
 import android.os.Bundle;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import nitezh.ministock.activities.ChartActivity;
 import nitezh.ministock.activities.GlobalWidgetData;
-
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -85,4 +81,5 @@ public class ChartDataTest {
             e.printStackTrace();
         }
     }
+
 }

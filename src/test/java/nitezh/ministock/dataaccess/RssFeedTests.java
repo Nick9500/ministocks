@@ -17,7 +17,7 @@ import static junit.framework.Assert.assertEquals;
 public class RssFeedTests {
     @Test
     public void accessNasdaqRSSTest(){
-        URL url = null;
+        URL url;
         String urlString ="http://articlefeeds.nasdaq.com/nasdaq/symbols?symbol=MSFT";
         try {
             url = new URL(urlString);
@@ -29,4 +29,20 @@ public class RssFeedTests {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void accessNasdaqRSSfailTest(){
+        URL url;
+        String urlString ="http://articlefeeds.nasdaaq.com/nasdaq/symbols?symbol=MSFT";
+        try {
+            url = new URL(urlString);
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            request.connect();
+            assertEquals(request.HTTP_BAD_REQUEST, request.getResponseCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

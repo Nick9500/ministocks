@@ -33,7 +33,7 @@ public class NewsfeedActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bonobo_news_layout);
         obj = GlobalWidgetData.getXMLObj();
-        ListView listView = null;
+        ListView listView;
         ArrayList<RssItem> list = obj.getRssList();
         final ArrayList<String> nameArray = new ArrayList<>();
         ArrayList<String> infoArray = new ArrayList<>();

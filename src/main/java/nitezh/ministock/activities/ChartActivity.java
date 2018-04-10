@@ -126,7 +126,6 @@ public class ChartActivity extends Activity {
 
             new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(graphPrices));
         } else {
-            String intervalStr = intervalSwitcher(interval);
             Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
                     + symbol + "&apikey=" + alphavantagekey);
 

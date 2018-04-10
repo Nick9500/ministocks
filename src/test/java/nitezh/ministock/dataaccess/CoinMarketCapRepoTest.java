@@ -2,6 +2,7 @@ package nitezh.ministock.dataaccess;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import nitezh.ministock.mocks.MockCache;
@@ -20,24 +21,84 @@ public class CoinMarketCapRepoTest {
     CoinMarketCapRepo coinMarketCapRepo;
 
     @Test
-    public void getAllAPIData() throws JSONException{
+    public void getAllDefaultAPIData() throws JSONException{  //By Default, we should be getting the first 100 stocks
         String blankID = "";  //should get all the data if no id is provided
-        int NumberOfTotalStocks = 100;  //Number of total stocks from CoinMarketRepo
+        int NumberOfTotalDefaultStocks = 100;  //Number of total stocks from CoinMarketRepo by default
 
         coinMarketCapRepo = new CoinMarketCapRepo(new FxChangeRepository());
-        JSONArray jsonArray = coinMarketCapRepo.retrieveQuotesAsJson(blankID);
+        JSONArray jsonArray = coinMarketCapRepo.retrieveQuotesAsJson(blankID, 0);
         assertNotNull(jsonArray);
-        assertEquals(NumberOfTotalStocks , jsonArray.length());  //we should be getting every stock
+        assertEquals(NumberOfTotalDefaultStocks , jsonArray.length());  //we should be getting every stock
+
+        for (int i = 0; i< NumberOfTotalDefaultStocks; i++) {
+            JSONObject jsonObject = jsonArray.optJSONObject(i);
+
+            assertFalse(jsonObject.optString("name").isEmpty());
+            assertFalse(jsonObject.optString("symbol").isEmpty());
+            assertFalse(jsonObject.optString("rank").isEmpty());
+            assertFalse(jsonObject.optString("price_usd").isEmpty());
+            assertFalse(jsonObject.optString("price_btc").isEmpty());
+            assertFalse(jsonObject.optString("24h_volume_usd").isEmpty());
+            assertFalse(jsonObject.optString("market_cap_usd").isEmpty());
+            assertFalse(jsonObject.optString("available_supply").isEmpty());
+            assertFalse(jsonObject.optString("total_supply").isEmpty());
+            assertFalse(jsonObject.optString("percent_change_1h").isEmpty());
+            assertFalse(jsonObject.optString("percent_change_24h").isEmpty());
+            assertFalse(jsonObject.optString("percent_change_7d").isEmpty());
+            assertFalse(jsonObject.optString("last_updated").isEmpty());
+        }
     }
     @Test
     public void getAPIDataByID() throws JSONException{
         String id = "bitcoin"; //will get the data only related to bitcoin
         coinMarketCapRepo = new CoinMarketCapRepo(new FxChangeRepository());
-        JSONArray jsonArray = coinMarketCapRepo.retrieveQuotesAsJson(id);
+        JSONArray jsonArray = coinMarketCapRepo.retrieveQuotesAsJson(id, 0);
         assertNotNull(jsonArray);
         assertEquals(1, jsonArray.length());  //we should only be getting bitcoin
+
+        JSONObject jsonObject = jsonArray.optJSONObject(0);
+
+        assertFalse(jsonObject.optString("name").isEmpty());
+        assertFalse(jsonObject.optString("symbol").isEmpty());
+        assertFalse(jsonObject.optString("rank").isEmpty());
+        assertFalse(jsonObject.optString("price_usd").isEmpty());
+        assertFalse(jsonObject.optString("price_btc").isEmpty());
+        assertFalse(jsonObject.optString("24h_volume_usd").isEmpty());
+        assertFalse(jsonObject.optString("market_cap_usd").isEmpty());
+        assertFalse(jsonObject.optString("available_supply").isEmpty());
+        assertFalse(jsonObject.optString("total_supply").isEmpty());
+        assertFalse(jsonObject.optString("percent_change_1h").isEmpty());
+        assertFalse(jsonObject.optString("percent_change_24h").isEmpty());
+        assertFalse(jsonObject.optString("percent_change_7d").isEmpty());
+        assertFalse(jsonObject.optString("last_updated").isEmpty());
     }
 
+    //Tests The limit feature.
+    @Test
+    public void getAPIDataWithLimit() throws JSONException {
+        String blankID = "";  //should get all possible data if no id is provided
+        int limit = 90;  //Limit the number of stocks to 90
 
+        coinMarketCapRepo = new CoinMarketCapRepo(new FxChangeRepository());
+        JSONArray jsonArray = coinMarketCapRepo.retrieveQuotesAsJson(blankID, limit);
+        assertNotNull(jsonArray);
 
+        for (int i = 0; i< limit; i++) {
+           JSONObject jsonObject = jsonArray.optJSONObject(i);
+
+            assertFalse(jsonObject.optString("name").isEmpty());
+            assertFalse(jsonObject.optString("symbol").isEmpty());
+            assertFalse(jsonObject.optString("rank").isEmpty());
+            assertFalse(jsonObject.optString("price_usd").isEmpty());
+            assertFalse(jsonObject.optString("price_btc").isEmpty());
+            assertFalse(jsonObject.optString("24h_volume_usd").isEmpty());
+            assertFalse(jsonObject.optString("market_cap_usd").isEmpty());
+            assertFalse(jsonObject.optString("available_supply").isEmpty());
+            assertFalse(jsonObject.optString("total_supply").isEmpty());
+            assertFalse(jsonObject.optString("percent_change_1h").isEmpty());
+            assertFalse(jsonObject.optString("percent_change_24h").isEmpty());
+            assertFalse(jsonObject.optString("percent_change_7d").isEmpty());
+            assertFalse(jsonObject.optString("last_updated").isEmpty());
+       }
+    }
 }

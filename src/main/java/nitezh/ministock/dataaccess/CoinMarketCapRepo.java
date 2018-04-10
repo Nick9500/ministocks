@@ -7,7 +7,6 @@ package nitezh.ministock.dataaccess;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import nitezh.ministock.utils.UrlDataTools;
 
@@ -22,16 +21,20 @@ public class CoinMarketCapRepo {
     }
 
     //Retrieve stock exchange info
-    JSONArray retrieveQuotesAsJson(String id) throws JSONException {
-        String url = GetURL(id);
+    JSONArray retrieveQuotesAsJson(String id, int limit) throws JSONException {
+        String url = GetURL(id, limit);
         String quotesString = UrlDataTools.getUrlData(url);
         JSONArray quotes = new JSONArray(quotesString);
 
         return quotes;
     }
 
-    private String GetURL(String ID){
-        return baseURL+ID;
+    private String GetURL(String ID, int limit){
+
+        if (limit > 0)
+            return baseURL+ID+"/?"+limit;
+        else
+            return baseURL+ID;
     }
 
 }

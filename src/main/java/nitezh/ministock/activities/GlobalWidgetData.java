@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import nitezh.ministock.activities.widget.WidgetRow;
+import nitezh.ministock.dataaccess.HandleXML;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,7 @@ public class GlobalWidgetData extends Application {
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
     public String urlString;
     public static int interval;
+    public static HandleXML obj;
 
     public static List<WidgetRow> getList() {
         return myStockList;
@@ -46,6 +48,17 @@ public class GlobalWidgetData extends Application {
     public String getURLString() {
 
         return urlString;
+    }
+
+    public static void initXMLForRss( String ticker ){
+        String urlBase = "http://articlefeeds.nasdaq.com/nasdaq/symbols?symbol=";
+        String url = urlBase + ticker;
+        obj = new HandleXML(url);
+        obj.fetchXML();
+    }
+
+    public static HandleXML getXMLObj(){
+        return obj;
     }
 
     // Used in Time Scale of Graph Implementation

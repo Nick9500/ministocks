@@ -77,15 +77,13 @@ public class StockQuoteRepository {
 
    public  HashMap<String, StockQuote> getLiveQuotes(List<String> symbols) {
         HashMap<String, StockQuote> allQuotes = new HashMap<>();
-        HashMap<String, StockQuote> cryptoQuotes;
         List<String>  stockSymbols = new ArrayList<>();
         symbols = this.convertRequestSymbols(symbols);
 
         for(String symbol : symbols){
             String name = coinMarketCapRepository.findName(symbol);
             if(!name.isEmpty()) {
-                cryptoQuotes = this.coinMarketCapRepository.getQuotes(name);
-                allQuotes.putAll(cryptoQuotes);
+                allQuotes.putAll(this.coinMarketCapRepository.getQuotes(name));
             }
             else
                 stockSymbols.add(symbol);

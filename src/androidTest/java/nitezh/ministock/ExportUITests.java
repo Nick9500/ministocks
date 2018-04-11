@@ -100,7 +100,6 @@ public class ExportUITests {
         selectStockSetup();
         setStock(1, "FB");       // Add 2nd Stock
         setStock(0, "MMD");
-        removeStock(1);
         mDevice.pressBack();
         clickExport();
 

@@ -77,8 +77,5 @@ public class StockSuggestionsTest {
         System.out.println(jsonObject.optString("symbol"));
         assertTrue(!jsonObject.optString("symbol").isEmpty());
         assertEquals("BTC", jsonObject.optString("symbol"));
-
-
-
     }
 }

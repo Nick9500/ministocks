@@ -10,7 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
 
 import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.utils.UrlDataTools;
@@ -26,12 +29,17 @@ public class CoinMarketCapRepo {
     }
 
     //Retrieve stock exchange info
-    JSONArray retrieveQuotesAsJson(String id, int limit) throws JSONException {
+    JSONArray retrieveQuotesAsJson(String id, int limit){
         String url = GetURL(id, limit);
-        String quotesString = UrlDataTools.getUrlData(url);
-        JSONArray quotes = new JSONArray(quotesString);
-
-        return quotes;
+        try{
+            String quotesString = UrlDataTools.getUrlData(url);
+            JSONArray quotes = new JSONArray(quotesString);
+            return quotes;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     //for crypto
@@ -52,12 +60,30 @@ public class CoinMarketCapRepo {
                     "",
                     Locale.US);
             quotes.put(quote.getSymbol(), quote);
-        }
-        catch(JSONException e){
 
+        }
+        catch(Exception e){
+            e.printStackTrace();
         }
 
         return quotes;
+    }
+
+    public String findName(String symbol){
+        JSONArray jsonArray;
+        try {
+            jsonArray = retrieveQuotesAsJson("", 100);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String symbolToCompare = jsonArray.getJSONObject(i).getString("symbol");
+                if(symbol.equals(symbolToCompare)){
+                    return jsonArray.getJSONObject(i).getString("name");
+                }
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private String GetURL(String ID, int limit){

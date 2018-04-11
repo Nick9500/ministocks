@@ -6,7 +6,9 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.mocks.MockCache;
@@ -125,5 +127,24 @@ public class CoinMarketCapRepoTest {
         assertFalse(BTCQuote.getVolume().isEmpty());
         assertFalse(BTCQuote.getPrice().isEmpty());
         assertFalse(BTCQuote.getPercent().isEmpty());
+    }
+
+    @Test
+    public void findNameBySymbol() throws JSONException{
+       List<String> symbols = new ArrayList<>();
+       symbols.add("BTC");
+       symbols.add("ETH");
+       symbols.add("TRX");
+       symbols.add("XLM");
+
+       List<String> names = new ArrayList<>();
+       names.add("Bitcoin");
+       names.add("Ethereum");
+       names.add("TRON");
+       names.add("Stellar");
+
+       for(int i = 0 ; i < symbols.size(); i++){
+           assertEquals(names.get(i), coinMarketCapRepo.findName(symbols.get(i)));
+       }
     }
 }

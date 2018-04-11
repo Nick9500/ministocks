@@ -21,7 +21,7 @@ public class CoinMarketCapRepo {
   private String baseURL = "https://api.coinmarketcap.com/v1/ticker/";
 
    //constructor
-    CoinMarketCapRepo(FxChangeRepository fxChangeRepo){
+   public CoinMarketCapRepo(FxChangeRepository fxChangeRepo){
         this.fxChangeRepo = fxChangeRepo;
     }
 
@@ -35,22 +35,27 @@ public class CoinMarketCapRepo {
     }
 
     //for crypto
-    public HashMap<String, StockQuote> getQuotes(String symbol) throws JSONException{
+    public HashMap<String, StockQuote> getQuotes(String symbol){
         HashMap<String, StockQuote> quotes = new HashMap<>();
         JSONArray jsonArray;
-        jsonArray = retrieveQuotesAsJson(symbol,1);
-        JSONObject stock = jsonArray.getJSONObject(0);
-        StockQuote quote = new StockQuote(
-                stock.getString("symbol"),
-                stock.getString("price_usd"),
-                "",
-                stock.getString("percent_change_1h"),
-                "",
-                stock.getString("24h_volume_usd"),
-                stock.getString("name"),
-                "",
-                Locale.US);
-        quotes.put(quote.getSymbol(), quote);
+        try {
+            jsonArray = retrieveQuotesAsJson(symbol, 1);
+            JSONObject stock = jsonArray.getJSONObject(0);
+            StockQuote quote = new StockQuote(
+                    stock.getString("symbol"),
+                    stock.getString("price_usd"),
+                    "",
+                    stock.getString("percent_change_1h"),
+                    "",
+                    stock.getString("24h_volume_usd"),
+                    stock.getString("name"),
+                    "",
+                    Locale.US);
+            quotes.put(quote.getSymbol(), quote);
+        }
+        catch(JSONException e){
+
+        }
 
         return quotes;
     }

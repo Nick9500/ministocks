@@ -534,13 +534,9 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         importFile.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                try {
-                    importStocks();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                //Toast.makeText(PreferencesActivity.this, "This is my import message!", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(PreferencesActivity.this, "This is my import message!", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -848,7 +844,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             }
         }
     }
-/*
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -864,7 +860,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         }
         finish();
     }
-*/
+
     private void showHelpUsage() {
         String title = "Selecting widget views";
         String body = "The widget has multiple views that display different information.<br /><br />These views can be turned on from the AppWidgetProvider views menu in settings.<br /><br />Once selected, the views can be changed on your home screen by touching the right-side of the widget.<br /><br />If a stock does not have information for a particular view, then the daily percentage change will instead be displayed for that stock in blue.<br /><br /><b>Daily change %</b><br /><br />Shows the current stock price with the daily percentage change.<br /><br /><b>Daily change (DA)</b><br /><br />Shows the current stock price with the daily price change.<br /><br /><b>Total change % (PF T%)</b><br /><br />Shows the current stock price with the total percentage change from the buy price in the portfolio.<br /><br /><b>Total change (PF TA)</b><br /><br />Shows the current stock price with the total price change from the buy price in the portfolio.<br /><br /><b>Total change AER % (PF AER)</b><br /><br />Shows the current stock price with the annualised percentage change using the buy price in the portfolio.<br /><br /><b>P/L daily change % (P/L D%)</b><br /><br />Shows your current holding value with the daily percentage change.<br /><br /><b>P/L daily change (P/L DA)</b><br /><br />Shows your current holding value with the daily price change.<br /><br /><b>P/L total change % (P/L T%)</b><br /><br />Shows your current holding value with the total percentage change from the buy cost in the portfolio.<br /><br /><b>P/L total change (P/L TA)</b><br /><br />Shows your current holding value with the total value change from the buy cost in the portfolio.<br /><br /><b>P/L total change AER (P/L AER)</b><br /><br />Shows your current holding value with the annualised percentage change using the buy cost in the portfolio.";
@@ -957,7 +953,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 "Please support MinistocksActivity by giving the application a 5 star rating in the android market.<br /><br />Motivation to continue to improve the product and add new features comes from positive feedback and ratings.",
                 "Rate it!", "Close", callable, null);
     }
-
+/*
     private void importStocks() throws IOException {
 
         Widget widget;
@@ -1021,6 +1017,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widgetCollectionList);
 
     }
-
+**/
 
 }

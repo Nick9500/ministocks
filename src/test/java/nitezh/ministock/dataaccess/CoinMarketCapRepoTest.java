@@ -111,7 +111,6 @@ public class CoinMarketCapRepoTest {
     public void getQuotes() throws JSONException{
         // Arrange
         String symbol ="bitcoin";
-        String market = "USD";
 
         // Act
         HashMap<String, StockQuote> stockQuotes = coinMarketCapRepo.getQuotes(symbol);

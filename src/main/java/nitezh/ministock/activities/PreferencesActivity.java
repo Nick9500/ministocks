@@ -973,35 +973,29 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 "Rate it!", "Close", callable, null);
     }
 
-    private List <String> openStocksFile()throws IOException
-    {
+    private List <String> openStocksFile()throws IOException  {
         List <String> symbols = new ArrayList<String>();
 
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
-
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader bufferedReader = new BufferedReader(isr);
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-
                 symbols.add(line);
             }
             bufferedReader.close();
         }
-        else
-        {
+        else {
             Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
                     Toast.LENGTH_LONG).show();
         }
-
         return symbols;
     }
 
-    private void creatQuotesFromCSV(List<String> csvSymbols)
-    {
+    private void creatQuotesFromCSV(List<String> csvSymbols) {
         int i = 1;
         myData.setImportSymbols(csvSymbols);
         WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
@@ -1018,24 +1012,21 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         Editor editor = preferences.edit();
         editor.clear();
         mPendingUpdate = true;
-        for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
-        {
+
+        for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet()) {
            editor.putString(entry.getKey(), entry.getValue().getName());
            editor.apply();
            i++;
         }
         wv.applyPendingChanges(mAppWidgetId);
-
     }
 
     private void importStocks() throws IOException {
-
         RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
-
         csvSymbols = openStocksFile();
-
         creatQuotesFromCSV(csvSymbols);
         importUpdate = true;
+
         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
@@ -1045,6 +1036,5 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         // Updates the widget ListView immediately
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
         appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widgetCollectionList);
-
     }
 }

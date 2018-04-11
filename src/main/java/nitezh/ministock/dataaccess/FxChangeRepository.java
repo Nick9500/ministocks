@@ -48,6 +48,12 @@ public class FxChangeRepository {
         return false;
     }
 
+    private boolean hasCrypto(String symbol){
+        if(symbol.isEmpty())
+            return false;
+        return true;
+    }
+
     public HashMap<String, String> getChanges(Cache cache, List<String> symbols) {
         HashMap<String, String> changes = new HashMap<>();
         if (!this.hasFxSymbols(symbols)) {
@@ -67,7 +73,27 @@ public class FxChangeRepository {
         return changes;
     }
 
+    //for crypto
+    public HashMap<String, String> getChanges(Cache cache, String symbol) {
+        HashMap<String, String> changes = new HashMap<>();
+        if (!this.hasCrypto(symbol)) {
+            return changes;
+        }
+
+        try {
+            JSONObject jsonChanges = retrieveCryptoChangesAsJson(cache);
+            changes.put(symbol, jsonChanges.getString(symbol));
+        } catch (JSONException ignored) {
+        }
+
+        return changes;
+    }
+
     public JSONObject retrieveChangesAsJson(Cache cache) throws JSONException {
+        return new JSONObject(UrlDataTools.getCachedUrlData(BASE_URL, cache, 86400));
+    }
+
+    public JSONObject retrieveCryptoChangesAsJson(Cache cache) throws JSONException {
         return new JSONObject(UrlDataTools.getCachedUrlData(BASE_URL, cache, 86400));
     }
 }

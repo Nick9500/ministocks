@@ -25,11 +25,13 @@ import java.util.Set;
  */
 
 public class GlobalWidgetData extends Application {
-    // Use in population of listview
+
+    // Use in population of listview 
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
     public String urlString;
     public static int interval;
     public static HandleXML obj;
+
 
     public static List<WidgetRow> getList() {
         return myStockList;
@@ -38,6 +40,7 @@ public class GlobalWidgetData extends Application {
     public void setGlobalList(List<WidgetRow> list) {
         myStockList = list;
     }
+
 
     // Variables in Graph Implementation
     public void setURLString(String urlString) {

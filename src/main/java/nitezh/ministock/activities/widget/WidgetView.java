@@ -57,11 +57,18 @@ import nitezh.ministock.utils.CurrencyTools;
 import nitezh.ministock.utils.NumberTools;
 import nitezh.ministock.utils.ReflectionTools;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
 import static nitezh.ministock.activities.widget.WidgetProviderBase.UpdateType;
 import static nitezh.ministock.activities.widget.WidgetProviderBase.ViewType;
 
-class WidgetView {
+public class WidgetView {
 
     private final RemoteViews remoteViews;
     private final Widget widget;
@@ -228,7 +235,7 @@ class WidgetView {
         return enabledViews;
     }
 
-    private WidgetRow getRowInfo(String symbol, ViewType widgetView) {
+    public WidgetRow getRowInfo(String symbol, ViewType widgetView) {
         WidgetRow widgetRow = new WidgetRow(this.widget);
         StockQuote quote = this.quotes.get(symbol);
 
@@ -447,7 +454,7 @@ class WidgetView {
         return remoteViews;
     }
 
-    private int getNextView(UpdateType updateMode) {
+    public int getNextView(UpdateType updateMode) {
         int currentView = this.widget.getPreviousView();
         if (updateMode == UpdateType.VIEW_CHANGE) {
             currentView += 1;
@@ -483,21 +490,24 @@ class WidgetView {
     public void applyPendingChanges(int widgetId) {
         int widgetDisplay = this.getNextView(this.updateMode);
         this.clear();
-
+       // List<String> importSymbols = myData.getSymbols();
         // Reset list. Otherwise duplicates the entries
         myStockList.clear();
 
         int lineNo = 0;
-        for (String symbol : this.symbols) {
-            if (symbol.equals("")) {
-                continue;
+
+            for (String symbol : this.symbols) {
+                if (symbol.equals("")) {
+                    continue;
+                }
+
+                // Get the info for this quote
+                lineNo++;
+                WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
+                myStockList.add(rowInfo);
             }
 
-            // Get the info for this quote
-            lineNo++;
-            WidgetRow rowInfo = getRowInfo(symbol, ViewType.values()[widgetDisplay]);
-            myStockList.add(rowInfo);
-        }
+
         myData.setGlobalList(myStockList);
 
         Intent intent = new Intent(context, Bonobo_widget_service.class);
@@ -510,6 +520,8 @@ class WidgetView {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widgetCollectionList);
     }
+
+
 
     private int getFooterColor() {
         String colorType = this.widget.getFooterColor();

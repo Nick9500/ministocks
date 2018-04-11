@@ -27,11 +27,15 @@ package nitezh.ministock.activities;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.TimePickerDialog;
+
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -39,12 +43,36 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.provider.Settings;
+import android.util.Log;
+import android.widget.RemoteViews;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -53,15 +81,34 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nitezh.ministock.DialogTools;
+import nitezh.ministock.PreferenceStorage;
+
 import nitezh.ministock.MimeSendTask;
+
 import nitezh.ministock.R;
+import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
+import nitezh.ministock.WidgetProvider;
+import nitezh.ministock.activities.widget.Bonobo_widget_service;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
+import nitezh.ministock.activities.widget.WidgetRow;
+import nitezh.ministock.activities.widget.WidgetView;
+import nitezh.ministock.domain.AndroidWidgetRepository;
+import nitezh.ministock.domain.PortfolioStock;
+import nitezh.ministock.domain.PortfolioStockRepository;
+import nitezh.ministock.domain.StockQuote;
+import nitezh.ministock.domain.StockQuoteRepository;
+import nitezh.ministock.domain.Widget;
+import nitezh.ministock.domain.WidgetRepository;
 import nitezh.ministock.utils.DateTools;
+import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
+import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
+
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
@@ -84,6 +131,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private String mTimePickerKey = null;
     private int mHour = 0;
     private int mMinute = 0;
+
+    public GlobalWidgetData myData = new GlobalWidgetData();
 
     private boolean isValidEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
@@ -477,6 +526,17 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 sendEmailToUser();
+                return true;
+            }
+        });
+
+        final Preference importFile = findPreference("open_file");
+        importFile.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+
+                Toast.makeText(PreferencesActivity.this, "This is my import message!", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -893,4 +953,70 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 "Please support MinistocksActivity by giving the application a 5 star rating in the android market.<br /><br />Motivation to continue to improve the product and add new features comes from positive feedback and ratings.",
                 "Rate it!", "Close", callable, null);
     }
+/*
+    private void importStocks() throws IOException {
+
+        Widget widget;
+        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
+
+        List <String> symbols = new ArrayList<String>();
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
+        if(file.exists())
+        {
+            FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
+
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+
+                symbols.add(line);
+            }
+            bufferedReader.close();
+
+            WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
+            Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
+            StockQuoteRepository quoteRepository = new StockQuoteRepository(
+                    PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
+                    widgetRepository);
+
+            widget = widgetRepository.getWidget(mAppWidgetId);
+            HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(symbols);
+            String time = quoteRepository.getTimeStamp();
+            quoteRepository.saveQuotes(stockQuotes, time);
+            WidgetView widgetView = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, time);
+            myStockList.clear();
+            for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
+            {
+                WidgetRow row = new WidgetRow(widget);
+                row.setSymbol(entry.getKey());
+                row.setPrice(entry.getValue().getPrice());
+                row.setStockInfo(entry.getValue().getPercent());
+                myStockList.add(row);
+
+            }
+            myData.setGlobalList(myStockList);
+
+        }
+        else
+        {
+            Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
+                    Toast.LENGTH_LONG).show();
+        }
+
+         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        remoteViews.setRemoteAdapter( R.id.widgetCollectionList, intent);
+
+        // Updates the widget ListView immediately
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widgetCollectionList);
+
+    }
+**/
+
 }

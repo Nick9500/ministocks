@@ -75,7 +75,7 @@ public class StockQuoteRepository {
         this.widgetRepository = widgetRepository;
     }
 
-    HashMap<String, StockQuote> getLiveQuotes(List<String> symbols) {
+   public  HashMap<String, StockQuote> getLiveQuotes(List<String> symbols) {
         HashMap<String, StockQuote> allQuotes = new HashMap<>();
 
         symbols = this.convertRequestSymbols(symbols);
@@ -199,7 +199,7 @@ public class StockQuoteRepository {
         return mTimeStamp;
     }
 
-    private void saveQuotes(HashMap<String, StockQuote> quotes, String timeStamp) {
+    public void saveQuotes(HashMap<String, StockQuote> quotes, String timeStamp) {
         mCachedQuotes = quotes;
         mTimeStamp = timeStamp;
 

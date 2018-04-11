@@ -4,6 +4,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
+
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -23,6 +26,7 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
     List sPercents = new ArrayList();
 
     List<WidgetRow> stockList = new ArrayList();
+ //   List<String> stockSymbols = new ArrayList<String>();
     Context mContext = null;
     private int mAppWidgetId;
 
@@ -76,6 +80,8 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
 
     @Override
     public void onCreate() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         initData();
     }
 
@@ -86,16 +92,18 @@ public class Bonobo_widget_data_provider implements RemoteViewsService.RemoteVie
 
     private void initData() {
         stockList = GlobalWidgetData.getList();
+   //     stockSymbols = GlobalWidgetData.getSymbols();
         sTickers.clear();
         sPrices.clear();
         sPercents.clear();
 
-        for (int i = 0; i < stockList.size(); i++) {
-            sTickers.add(stockList.get(i).getSymbol());
-            sPrices.add(stockList.get(i).getPrice());
-            sPercents.add(stockList.get(i).getStockInfo());
-        }
+            for (int i = 0; i < stockList.size(); i++) {
+                sTickers.add(stockList.get(i).getSymbol());
+                sPrices.add(stockList.get(i).getPrice());
+                sPercents.add(stockList.get(i).getStockInfo());
+            }
     }
+
 
     @Override
     public void onDestroy() {

@@ -1,13 +1,29 @@
 package nitezh.ministock.dataaccess;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
+import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.utils.Cache;
 import nitezh.ministock.utils.UrlDataTools;
+
+import static android.net.wifi.WifiConfiguration.Status.strings;
 
 /**
  * Created by GRao on 3/22/2018.
@@ -24,7 +40,7 @@ public class AlphaVantageRepository {
         this.fxChangeRepository = fxChangeRepository;
     }
 
-    //for regular stock exchange
+    //for regular stock exchange - mostly used for plotting data points on graphs
     JSONArray retrieveQuotesAsJson(Cache cache, String timeInterval, String symbols) throws JSONException {
         String url = buildRequestURL(timeInterval, symbols);
         String quotesString = UrlDataTools.getCachedUrlData(url, cache, 300);
@@ -79,6 +95,7 @@ public class AlphaVantageRepository {
         return baseURL+timeInterval+"&symbol="+symbol+"&interval=15min&outputsize=full&apikey="+API_KEY;
     }
 
+    //for crypto
     private String buildRequestURL(String timeInterval, String symbol, String market){
         return cryptoBaseURL+timeInterval+"&symbol="+symbol+"&market="+market+"&apikey="+API_KEY;
     }

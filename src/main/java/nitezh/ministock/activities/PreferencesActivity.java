@@ -100,6 +100,7 @@ import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.domain.StockQuoteRepository;
 import nitezh.ministock.domain.Widget;
 import nitezh.ministock.domain.WidgetRepository;
+import nitezh.ministock.utils.Cache;
 import nitezh.ministock.utils.DateTools;
 import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
@@ -120,6 +121,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     public static int mAppWidgetId = 0;
     // Private
     private static boolean mPendingUpdate = false;
+    private static boolean importUpdate;
     private static String mSymbolSearchKey = "";
     private final String CHANGE_LOG = "";
 
@@ -131,6 +133,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private String mTimePickerKey = null;
     private int mHour = 0;
     private int mMinute = 0;
+
+    private  List<String> csvSymbols;
 
     public GlobalWidgetData myData = new GlobalWidgetData();
 
@@ -534,9 +538,13 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         importFile.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                try {
+                    importStocks();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-
-                Toast.makeText(PreferencesActivity.this, "This is my import message!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(PreferencesActivity.this, "This is my import message!", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -850,6 +858,16 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         super.onStop();
         // Update the widget when we quit the preferences, and if the dirty,
         // flag is true then do a web update, otherwise do a regular update
+        if(importUpdate)
+        {
+            importUpdate = false;
+            finish();
+        }
+        else{ pendingUpdate(); }
+    }
+
+    private void pendingUpdate()
+    {
         if (mPendingUpdate) {
             mPendingUpdate = false;
             WidgetProviderBase.updateWidgets(getApplicationContext(),
@@ -860,6 +878,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         }
         finish();
     }
+
 
     private void showHelpUsage() {
         String title = "Selecting widget views";
@@ -953,60 +972,62 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 "Please support MinistocksActivity by giving the application a 5 star rating in the android market.<br /><br />Motivation to continue to improve the product and add new features comes from positive feedback and ratings.",
                 "Rate it!", "Close", callable, null);
     }
-/*
-    private void importStocks() throws IOException {
 
-        Widget widget;
-        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
-
+    private List <String> openStocksFile()throws IOException  {
         List <String> symbols = new ArrayList<String>();
 
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
-        if(file.exists())
-        {
+        if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
-
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader bufferedReader = new BufferedReader(isr);
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-
                 symbols.add(line);
             }
             bufferedReader.close();
-
-            WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
-            Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
-            StockQuoteRepository quoteRepository = new StockQuoteRepository(
-                    PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
-                    widgetRepository);
-
-            widget = widgetRepository.getWidget(mAppWidgetId);
-            HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(symbols);
-            String time = quoteRepository.getTimeStamp();
-            quoteRepository.saveQuotes(stockQuotes, time);
-            WidgetView widgetView = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_CHANGE, stockQuotes, time);
-            myStockList.clear();
-            for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet())
-            {
-                WidgetRow row = new WidgetRow(widget);
-                row.setSymbol(entry.getKey());
-                row.setPrice(entry.getValue().getPrice());
-                row.setStockInfo(entry.getValue().getPercent());
-                myStockList.add(row);
-
-            }
-            myData.setGlobalList(myStockList);
-
         }
-        else
-        {
+        else {
             Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
                     Toast.LENGTH_LONG).show();
         }
+        return symbols;
+    }
 
-         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
+    private void creatQuotesFromCSV(List<String> csvSymbols) {
+        int i = 1;
+        myData.setImportSymbols(csvSymbols);
+        WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
+        Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
+        StockQuoteRepository quoteRepository = new StockQuoteRepository(
+                PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
+                widgetRepository);
+        HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(csvSymbols);
+        String quotesTimeStamp = quoteRepository.getTimeStamp();
+        quoteRepository.saveQuotes(stockQuotes, quotesTimeStamp);
+        WidgetView wv = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_UPDATE, stockQuotes, quotesTimeStamp);
+        SharedPreferences preferences = getPreferenceScreen().getSharedPreferences();
+        myStockList.clear();
+        Editor editor = preferences.edit();
+        editor.clear();
+        mPendingUpdate = true;
+
+        for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet()) {
+           editor.putString(entry.getKey(), entry.getValue().getName());
+           editor.apply();
+           i++;
+        }
+        wv.applyPendingChanges(mAppWidgetId);
+    }
+
+    private void importStocks() throws IOException {
+        RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
+        csvSymbols = openStocksFile();
+        creatQuotesFromCSV(csvSymbols);
+        importUpdate = true;
+
+        Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -1015,8 +1036,5 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         // Updates the widget ListView immediately
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
         appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widgetCollectionList);
-
     }
-**/
-
 }

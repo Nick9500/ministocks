@@ -47,14 +47,14 @@ public class UrlDataTools {
         return builder.toString();
     }
 
-    static String urlToString(String url) throws IOException {
+    public static String urlToString(String url) throws IOException {
         URLConnection connection = new URL(url).openConnection();
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(60000);
         return inputStreamToString(connection.getInputStream());
     }
 
-    private static String getUrlData(String url) {
+    public static String getUrlData(String url) {
         // Ensure we always request some data
         if (!url.contains("INDU")) {
             url = url.replace("&s=", "&s=INDU+");

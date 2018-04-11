@@ -46,43 +46,76 @@ class StockSuggestions {
 
     private static final String BASE_URL = "https://s.yimg.com/aq/autoc?callback=YAHOO.Finance.SymbolSuggest.ssCallback&region=US&lang=en-US&query=";
     private static final Pattern PATTERN_RESPONSE = Pattern.compile("YAHOO\\.Finance\\.SymbolSuggest\\.ssCallback\\((\\{.*?\\})\\)");
+    private static final String CRYPTO_BASE_URL = "https://api.coinmarketcap.com/v1/ticker/";
 
     static List<Map<String, String>> getSuggestions(String query) {
+        final Pattern STOCK_REGEX = Pattern.compile("^" + query + "[A-Z0-9]*", Pattern.CASE_INSENSITIVE);
+
         List<Map<String, String>> suggestions = new ArrayList<>();
-        String response;
+        String cryptoResponse, stockResponse;
+
+        String cryptoUrl = CRYPTO_BASE_URL;
+        cryptoResponse = UrlDataTools.getUrlData(cryptoUrl);
+
         try {
-            String url = BASE_URL + URLEncoder.encode(query, "UTF-8");
-            Cache cache = new StorageCache(null);
-            response = UrlDataTools.getCachedUrlData(url, cache, 86400);
+            String stockUrl = BASE_URL + URLEncoder.encode(query, "UTF-8");
+            Cache stockCache = new StorageCache(null);
+            stockResponse = UrlDataTools.getCachedUrlData(stockUrl, stockCache, 86400);
 
         } catch (UnsupportedEncodingException e1) {
-            response = null;
+            e1.printStackTrace();
+            stockResponse = null;
         }
 
         // Return if empty response
-        if (response == null || response.equals("")) {
+        if (stockResponse == null || stockResponse.equals("") ||
+                cryptoResponse == null || cryptoResponse.equals("")) {
             return suggestions;
         }
-        Matcher m = PATTERN_RESPONSE.matcher(response);
-        if (m.find()) {
-            response = m.group(1);
-            try {
-                JSONArray jsonA = new JSONObject(response)
+
+        try {
+            JSONArray cryptoJson = new JSONArray(cryptoResponse);
+
+            for (int i = 0; i < cryptoJson.length(); i++) {
+
+                String symbol = cryptoJson.getJSONObject(i).getString("symbol");
+
+                Matcher cryptoMatcher = STOCK_REGEX.matcher(symbol);
+                if (cryptoMatcher.matches() && query.length() > 0) {
+                    Map<String, String> suggestion = new HashMap<>();
+                    suggestion.put("symbol", symbol);
+                    suggestion.put("name", cryptoJson.getJSONObject(i).getString("name"));
+                    suggestions.add(suggestion);
+                }
+            }
+
+            Matcher m = PATTERN_RESPONSE.matcher(stockResponse);
+            if (m.find()) {
+                stockResponse = m.group(1);
+
+                JSONArray jsonA = new JSONObject(stockResponse)
                         .getJSONObject("ResultSet")
                         .getJSONArray("Result");
 
                 for (int i = 0; i < jsonA.length(); i++) {
-                    Map<String, String> suggestion = new HashMap<>();
                     JSONObject jsonO = jsonA.getJSONObject(i);
-                    suggestion.put("symbol", jsonO.getString("symbol"));
-                    suggestion.put("name", jsonO.getString("name"));
-                    suggestions.add(suggestion);
-                }
-                return suggestions;
 
-            } catch (JSONException ignored) {
+                    String symbol = jsonO.getString("symbol");
+                    Matcher stockMatcher = STOCK_REGEX.matcher(symbol);
+
+                    // 7 characters is enough for StockSymbol.CountryCode, ex: AAPL.MX
+                    if (stockMatcher.matches() && symbol.length() < 8) {
+                        Map<String, String> suggestion = new HashMap<>();
+                        suggestion.put("symbol", symbol);
+                        suggestion.put("name", jsonO.getString("name"));
+                        suggestions.add(suggestion);
+                    }
+                }
             }
+            return suggestions;
+        } catch (JSONException ignored) {
         }
         return suggestions;
     }
+
 }

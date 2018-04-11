@@ -6,14 +6,10 @@ package nitezh.ministock.dataaccess;
 
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
 
 import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.utils.UrlDataTools;

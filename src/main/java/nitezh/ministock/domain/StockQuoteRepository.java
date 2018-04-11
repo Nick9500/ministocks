@@ -78,25 +78,18 @@ public class StockQuoteRepository {
    public  HashMap<String, StockQuote> getLiveQuotes(List<String> symbols) {
         HashMap<String, StockQuote> allQuotes = new HashMap<>();
         HashMap<String, StockQuote> cryptoQuotes;
-        List<String> cryptoNames = new ArrayList<>();
         List<String>  stockSymbols = new ArrayList<>();
         symbols = this.convertRequestSymbols(symbols);
 
         for(String symbol : symbols){
             String name = coinMarketCapRepository.findName(symbol);
             if(!name.isEmpty()) {
-                cryptoNames.add(name);
-            }else{
-                stockSymbols.add(symbol);
-            }
-        }
-
-       if (!cryptoNames.isEmpty()){
-            for (String symbol : cryptoNames) {
-                cryptoQuotes = this.coinMarketCapRepository.getQuotes(symbol);
+                cryptoQuotes = this.coinMarketCapRepository.getQuotes(name);
                 allQuotes.putAll(cryptoQuotes);
             }
-       }
+            else
+                stockSymbols.add(symbol);
+        }
 
        List<String> yahooSymbols = new ArrayList<>(stockSymbols);
        List<String> googleSymbols = new ArrayList<>(stockSymbols);
@@ -106,7 +99,7 @@ public class StockQuoteRepository {
        HashMap<String, StockQuote> googleQuotes = this.googleRepository.getQuotes(this.appCache, googleSymbols);
        if (yahooQuotes != null) allQuotes.putAll(yahooQuotes);
        if (googleQuotes != null) allQuotes.putAll(googleQuotes);
-        allQuotes = this.convertResponseQuotes(allQuotes);
+       allQuotes = this.convertResponseQuotes(allQuotes);
 
         return allQuotes;
     }

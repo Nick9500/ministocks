@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import nitezh.ministock.activities.widget.WidgetRow;
+import nitezh.ministock.dataaccess.HandleXML;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +30,7 @@ public class GlobalWidgetData extends Application {
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
     public String urlString;
     public static int interval;
+    public static HandleXML obj;
 
 
     public static List<WidgetRow> getList() {
@@ -51,6 +53,17 @@ public class GlobalWidgetData extends Application {
         return urlString;
     }
 
+    public static void initXMLForRss( String ticker ){
+        String urlBase = "http://articlefeeds.nasdaq.com/nasdaq/symbols?symbol=";
+        String url = urlBase + ticker;
+        obj = new HandleXML(url);
+        obj.fetchXML();
+    }
+
+    public static HandleXML getXMLObj(){
+        return obj;
+    }
+
     // Used in Time Scale of Graph Implementation
     public static void setInterval(int intervalVal) {
 
@@ -60,7 +73,6 @@ public class GlobalWidgetData extends Application {
     public static int getInterval() {
         return interval;
     }
-
 
     // Methods for Graph Implementation
     public static JsonObject getJsonObjectRoot(String sURL) {
@@ -105,7 +117,7 @@ public class GlobalWidgetData extends Application {
         chd = "chd=t%3A";                                           //Data of line graph. Must begin with t:
         chds = "chds=a";                                            //Automatic text format scaling
         chxt = "chxt=x%2Cy";                                         //Specify X and Y Axes
-        chs = "chs=700x690";                                        //chart size
+        chs = "chs=980x690";                                        //chart size
         chtt = "chtt=Graph";                                 //Name of Graph
         String chdVars = "";
 
@@ -172,8 +184,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                     }
                     dayCounter++;
                 }
-            }
-            else if (this.interval == 3) {
+            } else if (this.interval == 3) {
                 // Get a handle on Monthly closing values
                 JsonObject monthlyObj = rootObj.getAsJsonObject("Monthly Adjusted Time Series");
 
@@ -192,7 +203,7 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                     }
                     mthCounter++;
                 }
-            } else /*(this.interval == 2)*/ {
+            } else if (this.interval == 2) {
 
                 // Get a handle on Weekly closing values
                 JsonObject weeklyObj = rootObj.getAsJsonObject("Weekly Adjusted Time Series");
@@ -212,9 +223,45 @@ class JsonSnatcher extends AsyncTask<String, Void, List<String>> {
                     }
                     weekCounter++;
                 }
+            } else if (this.interval == 4) /* RSI Graph Chosen */ {
+                // Get a handle on RSI closing values
+                JsonObject RSIObj = rootObj.getAsJsonObject("Technical Analysis: RSI");
+
+                Set<Map.Entry<String, JsonElement>> entries = RSIObj.entrySet();
+                int RSICounter = 0;
+
+                for (Map.Entry<String, JsonElement> entry : entries) {
+                    if (RSICounter <= 30) {
+                        JsonObject weeklyStats = entry.getValue().getAsJsonObject();
+                        closingValuesWeekly.add(weeklyStats.getAsJsonPrimitive("RSI")
+                                .toString().replace("\"", ""));
+
+                        // Testing purposes
+                        Log.i("RSITest", weeklyStats.getAsJsonPrimitive("RSI")
+                                .toString().replace("\"", ""));
+                    }
+                    RSICounter++;
+                }
+            } else /* MACD Graph Chosen*/ {
+                // Get a handle on MACD closing values
+                JsonObject MACDObj = rootObj.getAsJsonObject("Technical Analysis: MACD");
+
+                Set<Map.Entry<String, JsonElement>> entries = MACDObj.entrySet();
+                int MACDCounter = 0;
+
+                for (Map.Entry<String, JsonElement> entry : entries) {
+                    if (MACDCounter <= 51) {
+                        JsonObject weeklyStats = entry.getValue().getAsJsonObject();
+                        closingValuesWeekly.add(weeklyStats.getAsJsonPrimitive("MACD")
+                                .toString().replace("\"", ""));
+
+                        // Testing purposes
+                        Log.i("MACDTest", weeklyStats.getAsJsonPrimitive("MACD")
+                                .toString().replace("\"", ""));
+                    }
+                    MACDCounter++;
+                }
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

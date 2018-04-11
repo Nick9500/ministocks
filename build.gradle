@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
+        google()
     }
     dependencies {
         // Check supported Gradle version at the URL below before changing the below
@@ -49,6 +50,7 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
     compile 'com.android.support:percent:25.0.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile files('libs/Simple-Rss2-Android.jar')
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.json:json:20160810'
@@ -63,5 +65,6 @@ dependencies {
 allprojects {
     repositories {
         jcenter()
+        google()
     }
 }

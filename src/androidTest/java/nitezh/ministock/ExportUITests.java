@@ -1,5 +1,6 @@
 package nitezh.ministock;
 
+
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
@@ -15,15 +16,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Created by Gurkomal Rao, Jefferson Casimir, Nicholas Fong on 3/14/2018.
- * Tests are done using UI Automator
+ * Created by Cristi Arde on 4/10/2018.
  */
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
-public class SimpleUITesting {
-
+public class ExportUITests {
     UiDevice mDevice;
+
 
     @Before
     public void setup() {
@@ -33,50 +33,11 @@ public class SimpleUITesting {
     @After
     public void finish() {
         mDevice.pressBack();    //After every test go back to home screen
-    }
-
-    @Test
-    public void clickRefresh() throws UiObjectNotFoundException {
-        selectRefresh();
-    }
-
-    @Test
-    public void clickListItemTest() throws UiObjectNotFoundException {
-        int index = 0;
-        UiScrollable listView = new UiScrollable(new UiSelector());
-        listView.setMaxSearchSwipes(100);
-        listView.waitForExists(3000);
-        listView.getChild(new UiSelector().clickable(true).index(index)).click();
-    }
-
-    @Test
-    public void clickPreferencesTest() throws UiObjectNotFoundException {
-        selectPreferences();
-    }
-
-    @Test
-    public void clickStockSetupTest() throws UiObjectNotFoundException {
-        selectPreferences();                        // Click Preferences Button
-        selectStockSetup();                        // Click Stocks setup
-        setStock(1, "K");       // Add 2nd Stock
-        setStock(0, "MMD");     // Change 1st Stock
-        removeStock(1);                     // Remove 2nd Stock
-    }
-
-    @Test
-    public void clickUpdatePrices() throws UiObjectNotFoundException {
-        selectPreferences();                        // Click Preferences Button
-        updatePrices();                             // Click Update prices now
+        mDevice.pressBack();    //After every test go back to home screen
     }
 
     private void selectPreferences() throws UiObjectNotFoundException {
         String preferencesResourceId = "nitezh.ministock:id/prefs_but";
-        UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));
-        button.clickAndWaitForNewWindow();
-    }
-
-    private void selectRefresh() throws UiObjectNotFoundException {
-        String preferencesResourceId = "nitezh.ministock:id/test_but";
         UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));
         button.clickAndWaitForNewWindow();
     }
@@ -104,7 +65,7 @@ public class SimpleUITesting {
     private void setStock(int index, String symbolToAdd) throws UiObjectNotFoundException {
         UiObject searchField = selectStockView(index);
         searchField.setText(symbolToAdd);
-        searchField.clickAndWaitForNewWindow(3000);
+        searchField.clickAndWaitForNewWindow(5000);
         mDevice.pressDPadDown();
         mDevice.pressDPadUp();
         mDevice.pressEnter();
@@ -117,16 +78,34 @@ public class SimpleUITesting {
         searchField.clickAndWaitForNewWindow(3000);
         mDevice.click(540, 200);
     }
-
-    private void updatePrices() throws UiObjectNotFoundException {
-        String updatePricesNow = "Update prices now";
+    private void clickExport() throws UiObjectNotFoundException  {
+        String export = "Export";
         UiScrollable preferencesListView = new UiScrollable(new UiSelector());
         preferencesListView.setMaxSearchSwipes(100);
-        preferencesListView.scrollTextIntoView(updatePricesNow);
+        preferencesListView.scrollTextIntoView(export);
         preferencesListView.waitForExists(3000);
         UiObject preferencesListItem =
                 preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
-                        updatePricesNow);
+                        export);
         preferencesListItem.click();
     }
+
+    private void addEmail()throws UiObjectNotFoundException {
+
+
+    }
+    @Test
+    public void exportTest() throws UiObjectNotFoundException{
+        selectPreferences();                        // Click Preferences Button
+        selectStockSetup();
+        setStock(1, "FB");       // Add 2nd Stock
+        setStock(0, "MMD");
+        removeStock(1);
+        mDevice.pressBack();
+        clickExport();
+
+    }
+
+
 }
+

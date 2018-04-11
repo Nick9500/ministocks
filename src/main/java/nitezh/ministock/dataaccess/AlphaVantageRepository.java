@@ -40,51 +40,6 @@ public class AlphaVantageRepository {
         this.fxChangeRepository = fxChangeRepository;
     }
 
-    //for crypto
-    public HashMap<String, StockQuote> getQuotes(Cache cache, String symbol, String market) throws JSONException{
-        HashMap<String, StockQuote> quotes = new HashMap<>();
-        JSONArray jsonArray;
-        String url = buildRequestURL("INTRADAY", symbol, market);
-        String quotesString = UrlDataTools.getCachedUrlData(url, cache, 300);
-
-       // Iterator<String> stringKey = quotesJson.keys();
-
-        /*quotesJson = quotesJson.getJSONObject(stringKey.next());
-        JSONObject quoteJson =  quotesJson.getJSONObject(stringKey.next());
-        StockQuote quote = new StockQuote(
-                symbol,
-                quotesJson.optString("1a. price ("+market+")"),
-                "",
-                "",
-                "",
-                quotesJson.optString("2. volume"),
-                name,
-                "",
-                Locale.US);
-        quotes.put(quote.getSymbol(), quote);
-        /*try {
-            jsonArray = this.retrieveQuotesAsJson(cache, "INTRADAY", symbol, market);
-            if (jsonArray != null) {
-                    quoteJson = jsonArray.getJSONObject(0);
-                    StockQuote quote = new StockQuote(
-                            quoteJson.optString("symbol"),
-                            quoteJson.optString("price"),
-                            "",
-                            "",
-                            "",
-                            quoteJson.optString("volume"),
-                            "",
-                            "",
-                            Locale.US);
-                    quotes.put(quote.getSymbol(), quote);
-            }
-        } catch (JSONException e) {
-            return null;
-        }*/
-
-        return quotes;
-    }
-
     //for regular stock exchange - mostly used for plotting data points on graphs
     JSONArray retrieveQuotesAsJson(Cache cache, String timeInterval, String symbols) throws JSONException {
         String url = buildRequestURL(timeInterval, symbols);

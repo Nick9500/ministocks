@@ -7,7 +7,12 @@ package nitezh.ministock.dataaccess;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Locale;
+
+import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.utils.UrlDataTools;
 
 public class CoinMarketCapRepo {
@@ -25,6 +30,27 @@ public class CoinMarketCapRepo {
         String url = GetURL(id, limit);
         String quotesString = UrlDataTools.getUrlData(url);
         JSONArray quotes = new JSONArray(quotesString);
+
+        return quotes;
+    }
+
+    //for crypto
+    public HashMap<String, StockQuote> getQuotes(String symbol) throws JSONException{
+        HashMap<String, StockQuote> quotes = new HashMap<>();
+        JSONArray jsonArray;
+        jsonArray = retrieveQuotesAsJson(symbol,1);
+        JSONObject stock = jsonArray.getJSONObject(0);
+        StockQuote quote = new StockQuote(
+                stock.getString("symbol"),
+                stock.getString("price_usd"),
+                "",
+                stock.getString("percent_change_1h"),
+                "",
+                stock.getString("24h_volume_usd"),
+                stock.getString("name"),
+                "",
+                Locale.US);
+        quotes.put(quote.getSymbol(), quote);
 
         return quotes;
     }

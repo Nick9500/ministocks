@@ -81,39 +81,6 @@ public class AlphaVantageRepositoryTests {
         }
     }
 
-    @Test
-    public void getQuotes() throws JSONException{
-        // Arrange
-        String symbol ="BTC";
-        String market = "USD";
-
-        // Act
-        HashMap<String, StockQuote> stockQuotes = alphaVantageRepository.getQuotes(new MockCache(), symbol, market);
-
-        // Assert
-        assertEquals(1, stockQuotes.size());
-
-        StockQuote BTCQuote = stockQuotes.get("BTC");
-        assertEquals("BTC", BTCQuote.getSymbol());
-        /*assertTrue(Arrays.asList(
-                "NasdaqNM",
-                "NMS",
-                "Nasdaq Global Select",
-                "NasdaqGS"
-        ).contains(aaplQuote.getExchange()));
-        assertEquals("Apple Inc.", aaplQuote.getName());
-
-        StockQuote googQuote = stockQuotes.get("GOOG");
-        assertEquals("GOOG", googQuote.getSymbol());
-        assertTrue(Arrays.asList(
-                "NasdaqNM",
-                "NMS",
-                "Nasdaq Global Select",
-                "NasdaqGS"
-        ).contains(googQuote.getExchange()));
-        assertEquals("Alphabet Inc.", googQuote.getName());*/
-    }
-
     private JSONArray returnJSONArray(String timeInterval, String symbols) throws JSONException{
         return alphaVantageRepository.retrieveQuotesAsJson(new MockCache(), timeInterval, symbols);
     }

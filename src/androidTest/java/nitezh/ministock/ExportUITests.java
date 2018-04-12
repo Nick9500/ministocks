@@ -134,6 +134,14 @@ public class ExportUITests {
         mDevice.pressEnter();
     }
 
+    // Confirms the presence of the alert dialog on invalid e-mail
+    private void confirmFailure() throws UiObjectNotFoundException{
+        String alertTitleField = "android:id/alertTitle";
+        UiObject alertTitle = mDevice.findObject(new UiSelector().resourceId(alertTitleField));
+        alertTitle.waitForExists(3000);
+        assertTrue(alertTitle.exists());
+    }
+
     @Test
     public void exportTest() throws UiObjectNotFoundException{
         selectPreferences();                        // Click Preferences Button
@@ -157,14 +165,5 @@ public class ExportUITests {
         sendEmail();
         confirmFailure();
     }
-
-    // Confirms the presence of the alert dialog on invalid e-mail
-    private void confirmFailure() throws UiObjectNotFoundException{
-        String alertTitleField = "android:id/alertTitle";
-        UiObject alertTitle = mDevice.findObject(new UiSelector().resourceId(alertTitleField));
-        alertTitle.waitForExists(3000);
-        assertTrue(alertTitle.exists());
     }
-
-}
 

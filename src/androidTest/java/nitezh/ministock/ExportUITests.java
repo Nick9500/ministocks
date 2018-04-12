@@ -139,7 +139,7 @@ public class ExportUITests {
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();
         setStockFromList(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));                     // Stock: FB
-        setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
+        setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
         removeStock(1);
         mDevice.pressBack();
         clickExport();

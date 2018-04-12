@@ -19,6 +19,8 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.Assert.assertTrue;
+
 /**
  * Created by Cristi Arde on 4/10/2018.
  */
@@ -36,8 +38,8 @@ public class ExportUITests {
 
     @After
     public void finish() {
-        mDevice.pressBack();    //After every test go back to home screen
-        mDevice.pressBack();    //After every test go back to home screen
+        mDevice.pressBack();    // After every test go back to home screen
+        mDevice.pressBack();    // After every test go back to home screen
     }
 
     private void selectPreferences() throws UiObjectNotFoundException {
@@ -109,14 +111,9 @@ public class ExportUITests {
         return emailField;
     }
 
-    private void addEmailAddress(String emailAddress) throws UiObjectNotFoundException {
+    private void setEmailAddress(String emailAddress) throws UiObjectNotFoundException {
         UiObject emailField = selectEmailField();
         emailField.setText(emailAddress);
-    }
-
-    private void setEmail(String emailAddress) throws UiObjectNotFoundException {
-        addEmailAddress(emailAddress);
-        sendEmail();
     }
 
     private void sendEmail() throws UiObjectNotFoundException {
@@ -124,18 +121,6 @@ public class ExportUITests {
         UiObject sendButton = mDevice.findObject(new UiSelector().resourceId(sendButtonID));
         sendButton.waitForExists(3000);
         sendButton.click();
-    }
-
-    @Test
-    public void exportTest() throws UiObjectNotFoundException{
-        selectPreferences();                        // Click Preferences Button
-        selectStockSetup();
-        setStockFromList(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));
-        setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D));
-        mDevice.pressBack();
-        clickExport();
-        String emailAddress = "ministocks34@gmail.com";
-        setEmail(emailAddress);
     }
 
     private void setStockFromList(int index, List<Integer> keyCodes) throws UiObjectNotFoundException {
@@ -149,6 +134,37 @@ public class ExportUITests {
         mDevice.pressEnter();
     }
 
+    @Test
+    public void exportTest() throws UiObjectNotFoundException{
+        selectPreferences();                        // Click Preferences Button
+        selectStockSetup();
+        setStockFromList(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));                     // Stock: FB
+        setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
+        removeStock(1);
+        mDevice.pressBack();
+        clickExport();
+        String emailAddress = "ministocks34@gmail.com";
+        setEmailAddress(emailAddress);
+        sendEmail();
+    }
+
+    @Test
+    public void emailValidatorTest() throws UiObjectNotFoundException{
+        selectPreferences();    // Click Preferences Button
+        clickExport();          // Select Export Item
+        String emailAddress = "Invalid Email Format";
+        setEmailAddress(emailAddress);
+        sendEmail();
+        confirmFailure();
+    }
+
+    // Confirms the presence of the alert dialog on invalid e-mail
+    private void confirmFailure() throws UiObjectNotFoundException{
+        String alertTitleField = "android:id/alertTitle";
+        UiObject alertTitle = mDevice.findObject(new UiSelector().resourceId(alertTitleField));
+        alertTitle.waitForExists(3000);
+        assertTrue(alertTitle.exists());
+    }
 
 }
 

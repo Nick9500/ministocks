@@ -132,7 +132,6 @@ public class ExportUITests {
         selectStockSetup();
         setStockFromList(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));
         setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D));
-        removeStock(1);
         mDevice.pressBack();
         clickExport();
         String emailAddress = "ministocks34@gmail.com";

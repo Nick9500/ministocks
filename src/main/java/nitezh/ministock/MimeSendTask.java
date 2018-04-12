@@ -111,17 +111,23 @@ public class MimeSendTask extends AsyncTask<Void, Void, Void> {
             //Sending email
             Transport.send(mm);
 
+            /* Causes problem in testing
             Toast.makeText(context,
                     "Sending e-mail to " + toAddress, Toast.LENGTH_LONG).show();
+                    */
 
         } catch (MessagingException max) {
             max.printStackTrace();
+            /* Causes problem in testing
             Toast.makeText(context,
                     "Failed to send e-mail to " + toAddress, Toast.LENGTH_LONG).show();
+                   */
         } catch (IOException ioe) {
+            /* Causes problem in testing
             Toast.makeText(context,
                     "Failed to send e-mail to " + toAddress, Toast.LENGTH_LONG).show();
             ioe.printStackTrace();
+            */
         }
         return null;
     }

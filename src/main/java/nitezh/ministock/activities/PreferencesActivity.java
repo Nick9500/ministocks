@@ -878,6 +878,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
         // Set up the input
         final EditText input = new EditText(this);
+        input.setId(R.id.emailFieldID);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 

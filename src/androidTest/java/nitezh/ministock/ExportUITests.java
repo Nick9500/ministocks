@@ -9,11 +9,15 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
+import android.view.KeyEvent;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Cristi Arde on 4/10/2018.
@@ -59,6 +63,7 @@ public class ExportUITests {
         UiScrollable stockListView = new UiScrollable(new UiSelector());
         stockListView.getChild(new UiSelector().clickable(true).index(index)).click();
         UiObject searchField = mDevice.findObject(new UiSelector().resourceId(searchFieldResourceId));
+        searchField.waitForExists(3000);
         return searchField;
     }
 
@@ -74,10 +79,16 @@ public class ExportUITests {
 
     private void removeStock(int index) throws UiObjectNotFoundException {
         UiObject searchField = selectStockView(index);
-        searchField.clearTextField();
-        searchField.clickAndWaitForNewWindow(3000);
-        mDevice.click(540, 200);
+        for (int i = 0; i < 8; i++) // 8 is max length of a stock, defined in stock suggestions
+            mDevice.pressKeyCode(KeyEvent.KEYCODE_DEL);
+        searchField.clickAndWaitForNewWindow(2000);
+        mDevice.pressKeyCode(KeyEvent.KEYCODE_SPACE);
+        mDevice.pressDPadDown();
+        mDevice.pressDPadDown();
+        mDevice.pressDPadDown();
+        mDevice.pressEnter();
     }
+
     private void clickExport() throws UiObjectNotFoundException  {
         String export = "Export";
         UiScrollable preferencesListView = new UiScrollable(new UiSelector());
@@ -90,20 +101,53 @@ public class ExportUITests {
         preferencesListItem.click();
     }
 
-    private void addEmail()throws UiObjectNotFoundException {
+    private UiObject selectEmailField() throws UiObjectNotFoundException {
+        String emailFieldID = "nitezh.ministock:id/emailFieldID";
+        UiObject emailField = mDevice.findObject(new UiSelector().resourceId(emailFieldID));
+        emailField.waitForExists(3000);
 
-
+        return emailField;
     }
+
+    private void addEmailAddress(String emailAddress) throws UiObjectNotFoundException {
+        UiObject emailField = selectEmailField();
+        emailField.setText(emailAddress);
+    }
+
+    private void setEmail(String emailAddress) throws UiObjectNotFoundException {
+        addEmailAddress(emailAddress);
+        sendEmail();
+    }
+
+    private void sendEmail() throws UiObjectNotFoundException {
+        String sendButtonID = "android:id/button1";
+        UiObject sendButton = mDevice.findObject(new UiSelector().resourceId(sendButtonID));
+        sendButton.waitForExists(3000);
+        sendButton.click();
+    }
+
     @Test
     public void exportTest() throws UiObjectNotFoundException{
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();
-        setStock(1, "FB");       // Add 2nd Stock
-        setStock(0, "MMD");
+        setStockFromList(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));
+        setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D));
         removeStock(1);
         mDevice.pressBack();
         clickExport();
+        String emailAddress = "ministocks34@gmail.com";
+        setEmail(emailAddress);
+    }
 
+    private void setStockFromList(int index, List<Integer> keyCodes) throws UiObjectNotFoundException {
+        UiObject searchField = selectStockView(index);
+        searchField.clearTextField();
+        for (Integer keyCode : keyCodes)
+            mDevice.pressKeyCode(keyCode);
+        searchField.clickAndWaitForNewWindow(2000);
+        mDevice.pressDPadDown();
+        mDevice.pressDPadUp();
+        mDevice.pressEnter();
     }
 
 

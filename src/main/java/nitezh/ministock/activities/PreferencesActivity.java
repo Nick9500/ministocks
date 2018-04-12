@@ -87,6 +87,7 @@ import nitezh.ministock.MimeSendTask;
 
 import nitezh.ministock.R;
 import nitezh.ministock.Storage;
+import nitezh.ministock.SymbolProvider;
 import nitezh.ministock.UserData;
 import nitezh.ministock.WidgetProvider;
 import nitezh.ministock.activities.widget.Bonobo_widget_service;
@@ -858,12 +859,13 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         super.onStop();
         // Update the widget when we quit the preferences, and if the dirty,
         // flag is true then do a web update, otherwise do a regular update
-        if(importUpdate)
+
+/*        if(importUpdate)
         {
             importUpdate = false;
             finish();
         }
-        else{ pendingUpdate(); }
+        else{*/ pendingUpdate();
     }
 
     private void pendingUpdate()
@@ -976,7 +978,11 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
     private List <String> openStocksFile()throws IOException  {
         List <String> symbols = new ArrayList<String>();
-
+        symbols.add("XRP");
+        symbols.add("DASH");
+        symbols.add("NEO");
+        symbols.add("AAPL");
+        /*
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
@@ -993,10 +999,14 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             Toast.makeText(PreferencesActivity.this, "FILE <<stocks.cvs>> DOES NOT EXIST",
                     Toast.LENGTH_LONG).show();
         }
+
+     */
         return symbols;
     }
 
     private void creatQuotesFromCSV(List<String> csvSymbols) {
+
+
         int i = 1;
         myData.setImportSymbols(csvSymbols);
         WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
@@ -1015,8 +1025,13 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         mPendingUpdate = true;
 
         for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet()) {
-           editor.putString(entry.getKey(), entry.getValue().getName());
-           editor.apply();
+
+          //  setPreference("Stock"+i, entry.getKey(), entry.getValue().getName());
+        //   editor.putString(entry.getKey(), entry.getValue().getName());
+
+            editor.putString("Stock"+i, entry.getKey());
+            editor.putString("Stock"+i + "_summary",  entry.getValue().getName());
+            editor.apply();
            i++;
         }
         wv.applyPendingChanges(mAppWidgetId);

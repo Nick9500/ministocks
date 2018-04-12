@@ -32,7 +32,10 @@ public class ImportUITests {
     }
 
     @After
-    public void finish() { mDevice.pressBack(); }
+    public void finish() {
+        mDevice.pressBack();
+        mDevice.pressBack();
+    }
 
     private void selectPreferences() throws UiObjectNotFoundException {
         String preferencesResourceId = "nitezh.ministock:id/prefs_but";

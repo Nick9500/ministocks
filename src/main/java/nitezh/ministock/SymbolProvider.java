@@ -98,7 +98,7 @@ public class SymbolProvider extends ContentProvider {
         }
     }
 
-    private Cursor getSuggestions(String query) {
+    public Cursor getSuggestions(String query) {
         query = query == null ? "" : query.toLowerCase().trim();
         List<Map<String, String>> suggestions = StockSuggestions.getSuggestions(query);
 

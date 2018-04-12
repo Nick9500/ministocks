@@ -8,11 +8,15 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
+import android.view.KeyEvent;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Gurkomal Rao, Jefferson Casimir, Nicholas Fong on 3/14/2018.
@@ -58,8 +62,8 @@ public class SimpleUITesting {
     public void clickStockSetupTest() throws UiObjectNotFoundException {
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();                        // Click Stocks setup
-        setStock(1, "K");       // Add 2nd Stock
-        setStock(0, "MMD");     // Change 1st Stock
+        setStock(0, Arrays.asList(KeyEvent.KEYCODE_K));     // Add 2nd Stock
+        setStock(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D));     // Change 1st Stock
         removeStock(1);                     // Remove 2nd Stock
     }
 
@@ -108,14 +112,29 @@ public class SimpleUITesting {
         mDevice.pressDPadDown();
         mDevice.pressDPadUp();
         mDevice.pressEnter();
+    }
 
+    private void setStock(int index, List<Integer> keyCodes) throws UiObjectNotFoundException {
+        UiObject searchField = selectStockView(index);
+        searchField.clearTextField();
+        for (Integer keyCode : keyCodes)
+            mDevice.pressKeyCode(keyCode);
+        searchField.clickAndWaitForNewWindow(2000);
+        mDevice.pressDPadDown();
+        mDevice.pressDPadUp();
+        mDevice.pressEnter();
     }
 
     private void removeStock(int index) throws UiObjectNotFoundException {
         UiObject searchField = selectStockView(index);
-        searchField.clearTextField();
-        searchField.clickAndWaitForNewWindow(3000);
-        mDevice.click(540, 200);
+        for (int i = 0; i < 8; i++) // 8 is max length of a stock, defined in stock suggestions
+            mDevice.pressKeyCode(KeyEvent.KEYCODE_DEL);
+        searchField.clickAndWaitForNewWindow(2000);
+        mDevice.pressKeyCode(KeyEvent.KEYCODE_SPACE);
+        mDevice.pressDPadDown();
+        mDevice.pressDPadDown();
+        mDevice.pressDPadDown();
+        mDevice.pressEnter();
     }
 
     private void updatePrices() throws UiObjectNotFoundException {

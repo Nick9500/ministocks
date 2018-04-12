@@ -123,7 +123,7 @@ public class ExportUITests {
         sendButton.click();
     }
 
-    private void setStockFromList(int index, List<Integer> keyCodes) throws UiObjectNotFoundException {
+    private void setStock(int index, List<Integer> keyCodes) throws UiObjectNotFoundException {
         UiObject searchField = selectStockView(index);
         searchField.clearTextField();
         for (Integer keyCode : keyCodes)
@@ -134,12 +134,20 @@ public class ExportUITests {
         mDevice.pressEnter();
     }
 
+    // Confirms the presence of the alert dialog on invalid e-mail
+    private void confirmFailure() throws UiObjectNotFoundException{
+        String alertTitleField = "android:id/alertTitle";
+        UiObject alertTitle = mDevice.findObject(new UiSelector().resourceId(alertTitleField));
+        alertTitle.waitForExists(3000);
+        assertTrue(alertTitle.exists());
+    }
+
     @Test
     public void exportTest() throws UiObjectNotFoundException{
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();
-        setStockFromList(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));                     // Stock: FB
-        setStockFromList(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
+        setStock(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));                     // Stock: FB
+        setStock(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
         removeStock(1);
         mDevice.pressBack();
         clickExport();
@@ -157,14 +165,5 @@ public class ExportUITests {
         sendEmail();
         confirmFailure();
     }
-
-    // Confirms the presence of the alert dialog on invalid e-mail
-    private void confirmFailure() throws UiObjectNotFoundException{
-        String alertTitleField = "android:id/alertTitle";
-        UiObject alertTitle = mDevice.findObject(new UiSelector().resourceId(alertTitleField));
-        alertTitle.waitForExists(3000);
-        assertTrue(alertTitle.exists());
-    }
-
 }
 

@@ -1,9 +1,24 @@
 package nitezh.ministock.activities;
 
+import android.os.Environment;
+import android.util.Log;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.robolectric.RuntimeEnvironment;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -12,6 +27,16 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import nitezh.ministock.activities.GlobalWidgetData;
+import nitezh.ministock.activities.widget.WidgetRow;
+import nitezh.ministock.domain.AndroidWidgetRepository;
+import nitezh.ministock.domain.Widget;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
 
 /**
  * Created by raj34 on 2018-03-15.
@@ -58,6 +83,55 @@ public class EmailTest {
         } catch (MessagingException max) {
             max.printStackTrace();
         }
+    }
+
+    @Test
+    public void ReadFromFileSent() {
+        //read from file, data can be stubbed
+        //create a file and store it
+        /*String path = Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
+        File folder = new File(path);
+        folder.mkdirs();*/
+        File file = new File("data.txt");
+
+        Widget widget = mock(Widget.class);
+        WidgetRow row = new WidgetRow(widget);
+
+        try {  //write data to file from a Widget Row
+            file.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(file);
+            OutputStreamWriter outWriter = new OutputStreamWriter(fOut);
+
+            row.setSymbol("$XDJ1");
+
+            outWriter.append(row.getSymbol());
+            outWriter.append("\n");
+
+            outWriter.close();
+
+            fOut.flush();
+            fOut.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+
+        //reading the symbol value from file
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+
+            }
+            br.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+
+        assertEquals(row.getSymbol(),text.toString());
     }
 
 }

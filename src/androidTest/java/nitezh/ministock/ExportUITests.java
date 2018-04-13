@@ -97,10 +97,10 @@ public class ExportUITests {
         preferencesListView.setMaxSearchSwipes(100);
         preferencesListView.scrollTextIntoView(export);
         preferencesListView.waitForExists(3000);
-        UiObject preferencesListItem =
+        UiObject exportListItem =
                 preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
                         export);
-        preferencesListItem.click();
+        exportListItem.click();
     }
 
     private UiObject selectEmailField() throws UiObjectNotFoundException {
@@ -142,7 +142,7 @@ public class ExportUITests {
         assertTrue(alertTitle.exists());
     }
 
-    @Test
+    //@Test
     public void exportTest() throws UiObjectNotFoundException{
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();

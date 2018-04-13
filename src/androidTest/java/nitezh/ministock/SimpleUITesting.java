@@ -38,7 +38,7 @@ public class SimpleUITesting {
     public void finish() {
         mDevice.pressBack();    //After every test go back to home screen
     }
-
+/*
     @Test
     public void clickRefresh() throws UiObjectNotFoundException {
         selectRefresh();
@@ -72,6 +72,67 @@ public class SimpleUITesting {
         selectPreferences();                        // Click Preferences Button
         updatePrices();                             // Click Update prices now
     }
+*/
+
+    @Test
+    public void settingsMenuTest() throws UiObjectNotFoundException {
+        selectPreferences();
+        clickMenuItem("Settings");      // Enter Settings Menu
+        clickMenuItem("Widget views");
+        mDevice.pressBack();
+        clickMenuItem("Appearance");
+        mDevice.pressBack();
+        clickMenuItem("Update options");
+        mDevice.pressBack();
+        clickMenuItem("Backup and Restore (BETA)");
+        mDevice.pressBack();
+        mDevice.pressBack();
+    }
+
+    @Test
+    public void portfolioMenuTest() throws UiObjectNotFoundException {
+        selectPreferences();
+        clickMenuItem("Portfolio");      // Enter Portfolio Menu
+        mDevice.pressBack();
+    }
+
+    @Test
+    public void helpMenuTest() throws UiObjectNotFoundException {
+        selectPreferences();
+        clickMenuItem("Help");      // Enter Help Menu
+        mDevice.pressBack();
+    }
+
+    @Test
+    public void aboutMenuTest() throws UiObjectNotFoundException {
+        selectPreferences();
+        clickMenuItem("About");      // Enter About Menu
+        mDevice.pressBack();
+    }
+
+    private void clickMenuItem(String itemName) throws UiObjectNotFoundException {
+        UiScrollable menuListView = new UiScrollable(new UiSelector());
+        menuListView.setMaxSearchSwipes(100);
+        menuListView.scrollTextIntoView(itemName);
+        menuListView.waitForExists(3000);
+        UiObject menuListItem =
+                menuListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
+                        itemName);
+        menuListItem.click();
+    }
+
+    private void clickSettings() throws UiObjectNotFoundException  {
+        String settings = "Settings";
+        UiScrollable preferencesListView = new UiScrollable(new UiSelector());
+        preferencesListView.setMaxSearchSwipes(100);
+        preferencesListView.scrollTextIntoView(settings);
+        preferencesListView.waitForExists(3000);
+        UiObject settingsListItem =
+                preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
+                        settings);
+        settingsListItem.click();
+    }
+
 
     private void selectPreferences() throws UiObjectNotFoundException {
         String preferencesResourceId = "nitezh.ministock:id/prefs_but";

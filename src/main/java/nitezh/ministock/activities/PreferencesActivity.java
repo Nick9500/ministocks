@@ -978,11 +978,11 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
     private List <String> openStocksFile()throws IOException  {
         List <String> symbols = new ArrayList<String>();
-        symbols.add("XRP");
-        symbols.add("DASH");
-        symbols.add("NEO");
-        symbols.add("AAPL");
-        /*
+      //  symbols.add("XRP");
+     //   symbols.add("DASH");
+      //  symbols.add("NEO");
+     //   symbols.add("AAPL");
+
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
@@ -1000,15 +1000,32 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                     Toast.LENGTH_LONG).show();
         }
 
-     */
         return symbols;
     }
 
     private void creatQuotesFromCSV(List<String> csvSymbols) {
 
-
+/*
+        List <String> symbols = new ArrayList<String>();
+        symbols.add("XML");
+        symbols.add("GOOGL");
+        symbols.add("TRX");
+        symbols.add("FB");
+        */
+        String first;
         int i = 1;
-        myData.setImportSymbols(csvSymbols);
+            for(String s : csvSymbols){
+                first = s;
+                try{
+            setPreference("Stock"+i,s , "");
+                    i++;
+                }catch(Exception e){
+                    e.printStackTrace();
+                    setPreference("Stock"+csvSymbols.size(), first, "");
+                }
+
+        }
+       /* myData.setImportSymbols(csvSymbols);
         WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
         Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
         StockQuoteRepository quoteRepository = new StockQuoteRepository(
@@ -1022,19 +1039,24 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         myStockList.clear();
         Editor editor = preferences.edit();
         editor.clear();
-        mPendingUpdate = true;
+        mPendingUpdate = true;*/
 
-        for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet()) {
 
-          //  setPreference("Stock"+i, entry.getKey(), entry.getValue().getName());
+        /*for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet()) {
+
+            try{
+            setPreference("Stock"+i, entry.getKey(), entry.getValue().getName());
         //   editor.putString(entry.getKey(), entry.getValue().getName());
 
-            editor.putString("Stock"+i, entry.getKey());
-            editor.putString("Stock"+i + "_summary",  entry.getValue().getName());
-            editor.apply();
+       //     editor.putString("Stock"+i, entry.getKey());
+    //        editor.putString("Stock"+i + "_summary",  entry.getValue().getName());
+   //         editor.apply();
            i++;
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
-        wv.applyPendingChanges(mAppWidgetId);
+        wv.applyPendingChanges(mAppWidgetId);*/
     }
 
     private void importStocks() throws IOException {

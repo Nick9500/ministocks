@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import nitezh.ministock.Storage;
+import nitezh.ministock.activities.GlobalWidgetData;
 import nitezh.ministock.dataaccess.CoinMarketCapRepo;
 import nitezh.ministock.dataaccess.FxChangeRepository;
 import nitezh.ministock.dataaccess.GoogleStockQuoteRepository;
@@ -50,6 +51,7 @@ import nitezh.ministock.utils.Cache;
 
 public class StockQuoteRepository {
 
+    public GlobalWidgetData myData = new GlobalWidgetData();
     private static final ImmutableBiMap<String, String> GOOGLE_SYMBOLS = new ImmutableBiMap.Builder<String, String>()
             .put(".DJI", "^DJI")
             .put(".IXIC", "^IXIC")

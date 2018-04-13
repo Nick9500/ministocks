@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class GlobalWidgetData extends Application {
 
     // Use in population of listview 
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
-    public static List<String> importSymbols = new ArrayList<>();
+    public static HashMap<String,String> importSymbolsAndNames = new HashMap<>();
     public String urlString;
     public static int interval;
     public static HandleXML obj;
@@ -42,6 +43,7 @@ public class GlobalWidgetData extends Application {
         myStockList = list;
     }
 
+    public static HashMap<String,String> getImportData(){ return importSymbolsAndNames; }
 
     // Variables in Graph Implementation
     public void setURLString(String urlString) {

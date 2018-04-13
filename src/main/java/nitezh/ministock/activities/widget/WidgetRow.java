@@ -123,7 +123,7 @@ public class WidgetRow {
         this.volume = volume;
     }
 
-    String getStockInfo() {
+     String getStockInfo() {
         return stockInfo;
     }
 
@@ -131,7 +131,7 @@ public class WidgetRow {
         this.stockInfo = stockInfo;
     }
 
-    String getStockInfoExtra() {
+    public String getStockInfoExtra() {
         return stockInfoExtra;
     }
 

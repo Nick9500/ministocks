@@ -59,6 +59,7 @@ import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -67,11 +68,18 @@ import java.util.regex.Pattern;
 
 import nitezh.ministock.DialogTools;
 import nitezh.ministock.MimeSendTask;
+import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
+import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
 import nitezh.ministock.activities.widget.Bonobo_widget_service;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
+import nitezh.ministock.domain.AndroidWidgetRepository;
+import nitezh.ministock.domain.StockQuote;
+import nitezh.ministock.domain.StockQuoteRepository;
+import nitezh.ministock.domain.WidgetRepository;
 import nitezh.ministock.utils.DateTools;
+import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;
@@ -81,6 +89,7 @@ import static android.content.SharedPreferences.OnSharedPreferenceChangeListener
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
+    public GlobalWidgetData myData = new GlobalWidgetData();
     // Constants
     private static final int STRING_TYPE = 0;
     private static final int LIST_TYPE = 1;

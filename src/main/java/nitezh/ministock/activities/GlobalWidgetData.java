@@ -29,12 +29,10 @@ public class GlobalWidgetData extends Application {
 
     // Use in population of listview 
     public static List<WidgetRow> myStockList = new ArrayList<WidgetRow>();
-    public static HashMap<String,String> importSymbolsAndNames = new HashMap<>();
     public String urlString;
     public static int interval;
     public static HandleXML obj;
-
-
+    
     public static List<WidgetRow> getList() {
         return myStockList;
     }
@@ -42,8 +40,6 @@ public class GlobalWidgetData extends Application {
     public void setGlobalList(List<WidgetRow> list) {
         myStockList = list;
     }
-
-    public static HashMap<String,String> getImportData(){ return importSymbolsAndNames; }
 
     // Variables in Graph Implementation
     public void setURLString(String urlString) {

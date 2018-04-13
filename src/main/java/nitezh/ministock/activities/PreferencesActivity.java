@@ -68,18 +68,11 @@ import java.util.regex.Pattern;
 
 import nitezh.ministock.DialogTools;
 import nitezh.ministock.MimeSendTask;
-import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.R;
-import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
 import nitezh.ministock.activities.widget.Bonobo_widget_service;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
-import nitezh.ministock.domain.AndroidWidgetRepository;
-import nitezh.ministock.domain.StockQuote;
-import nitezh.ministock.domain.StockQuoteRepository;
-import nitezh.ministock.domain.WidgetRepository;
 import nitezh.ministock.utils.DateTools;
-import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;

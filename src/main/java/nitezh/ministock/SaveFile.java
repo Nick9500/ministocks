@@ -36,10 +36,10 @@ public class SaveFile extends AsyncTask<Void, Void,Void> {
             FileOutputStream fOut = new FileOutputStream(fileSavedOnDevice);
             OutputStreamWriter writeTOFile = new OutputStreamWriter(fOut);
 
-            List<WidgetRow> dataList = GlobalWidgetData.getList();
+            List<WidgetRow> data = GlobalWidgetData.getList();
 
-            for (int dataCounter = 0; dataCounter < dataList.size(); dataCounter++) {
-                writeTOFile.append(dataList.get(dataCounter).getSymbol());
+            for (WidgetRow element : data) {
+                writeTOFile.append(element.getSymbol());
                 writeTOFile.append("\n");
             }
 

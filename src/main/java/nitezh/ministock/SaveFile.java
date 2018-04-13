@@ -24,29 +24,31 @@ public class SaveFile extends AsyncTask<Void, Void,Void> {
     }
 
     protected Void doInBackground(Void... voids) {
-        String path = Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
-        File folder = new File(path);
-        folder.mkdirs();
+        String fileLocation = Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
+        File filePath = new File(fileLocation);
+        filePath.mkdirs();
 
         //file name
-        File file = new File(folder, "stockData.csv");
+        File fileSavedOnDevice = new File(filePath, "stockData.csv");
 
         try {
-            file.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(file);
-            OutputStreamWriter outWriter = new OutputStreamWriter(fOut);
+            final boolean newFile = fileSavedOnDevice.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(fileSavedOnDevice);
+            OutputStreamWriter writeTOFile = new OutputStreamWriter(fOut);
 
-            List<WidgetRow> myList = GlobalWidgetData.getList();
-            for (int i = 0; i < myList.size(); i++) {
-                outWriter.append(myList.get(i).getSymbol());
-                outWriter.append("\n");
+            List<WidgetRow> dataList = GlobalWidgetData.getList();
+
+            for (int i = 0; i < dataList.size(); i++) {
+                writeTOFile.append(dataList.get(i).getSymbol());
+                writeTOFile.append("\n");
             }
-            outWriter.close();
+            writeTOFile.close();
 
             fOut.flush();
             fOut.close();
+
         } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
+            Log.e("Exception", "File write to device storage failed: " + e.toString());
         }
         return null;
     }

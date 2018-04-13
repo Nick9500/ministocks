@@ -44,8 +44,7 @@ public class MimeSendTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         //Data Storage Directory
-        String path =
-                Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
+        String path = Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
         File folder = new File(path);
         folder.mkdirs();
 

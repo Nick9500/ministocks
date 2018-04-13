@@ -38,7 +38,7 @@ public class SimpleUITesting {
     public void finish() {
         mDevice.pressBack();    //After every test go back to home screen
     }
-/*
+
     @Test
     public void clickRefresh() throws UiObjectNotFoundException {
         selectRefresh();
@@ -72,7 +72,6 @@ public class SimpleUITesting {
         selectPreferences();                        // Click Preferences Button
         updatePrices();                             // Click Update prices now
     }
-*/
 
     @Test
     public void settingsMenuTest() throws UiObjectNotFoundException {

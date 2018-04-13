@@ -38,15 +38,6 @@ public class GlobalWidgetData extends Application {
         return myStockList;
     }
 
-    public List<String> getImportSymbols() {
-        return importSymbols;
-    }
-
-    public void setImportSymbols(List<String> symbols)
-    {
-        this.importSymbols = symbols;
-    }
-
     public void setGlobalList(List<WidgetRow> list) {
         myStockList = list;
     }

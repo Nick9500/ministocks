@@ -142,13 +142,12 @@ public class ExportUITests {
         assertTrue(alertTitle.exists());
     }
 
-    //@Test
+    @Test
     public void exportTest() throws UiObjectNotFoundException{
         selectPreferences();                        // Click Preferences Button
         selectStockSetup();
         setStock(1, Arrays.asList(KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_B));                     // Stock: FB
         setStock(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
-        removeStock(1);
         mDevice.pressBack();
         clickExport();
         String emailAddress = "ministocks34@gmail.com";

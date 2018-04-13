@@ -1,19 +1,13 @@
 package nitezh.ministock.activities;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-
-import java.util.Iterator;
 
 import nitezh.ministock.utils.UrlDataTools;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
 
 
 public class ChartActivityTest {
@@ -32,10 +26,25 @@ public class ChartActivityTest {
         String rsiSymbol = rsi.getJSONObject("Meta Data").getString("1: Symbol");
         assertEquals("TSLA", rsiSymbol);
 
-
         // Assert that the RSI values are pulled
         assertFalse(rsi.optString("Technical Analysis: RSI").isEmpty());
 
+
+    }
+
+    @Test
+    public void retrieveMACDJSONvalues() throws JSONException {
+        symbol = "MSFT";
+        String MACDurl = buildMACDURL(symbol);
+        String macdVal = UrlDataTools.getUrlData(MACDurl);
+        JSONObject macd = new JSONObject(macdVal);
+
+        // Assert that the proper symbol has been pulled
+        String macdSymbol = macd.getJSONObject("Meta Data").getString("1: Symbol");
+        assertEquals("MSFT", macdSymbol);
+
+        // Assert that the MACD values are pulled
+        assertFalse(macd.optString("Technical Analysis: MACD").isEmpty());
 
     }
 

@@ -38,10 +38,11 @@ public class SaveFile extends AsyncTask<Void, Void,Void> {
 
             List<WidgetRow> dataList = GlobalWidgetData.getList();
 
-            for (int i = 0; i < dataList.size(); i++) {
-                writeTOFile.append(dataList.get(i).getSymbol());
+            for (int dataCounter = 0; dataCounter < dataList.size(); dataCounter++) {
+                writeTOFile.append(dataList.get(dataCounter).getSymbol());
                 writeTOFile.append("\n");
             }
+
             writeTOFile.close();
 
             fOut.flush();

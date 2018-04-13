@@ -43,7 +43,7 @@ public class ChartActivity extends Activity {
         GlobalWidgetData.initXMLForRss(symbol);
         this.symbol = symbol;
         Spanned html = Html.fromHtml("Graph of " + symbol + " <br /><br />");
-        TextView text = (TextView) findViewById(R.id.chart_text);
+        TextView text = ( TextView ) findViewById(R.id.chart_text);
         text.setText(html);
         String intervalStr = intervalSwitcher(interval);
         Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
@@ -53,7 +53,7 @@ public class ChartActivity extends Activity {
         List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
                 + symbol + "&apikey=" + alphavantagekey, interval);
 
-        new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
+        new ImageSnatcher(( ImageView ) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
 
     }
 
@@ -64,14 +64,14 @@ public class ChartActivity extends Activity {
         int position = getIntent().getIntExtra(WidgetProviderBase.ROW_POSITION, 0);
 
         // Buttons Related to Graphs
-        Button btnRSI = (Button) findViewById(R.id.btn_RSI);
-        Button btnMACD = (Button) findViewById(R.id.btn_MACD);
+        Button btnRSI = ( Button ) findViewById(R.id.btn_RSI);
+        Button btnMACD = ( Button ) findViewById(R.id.btn_MACD);
 
         final String sym = this.symbol;
-        Button btn7day = (Button) findViewById(R.id.btn_7day);
-        Button btn52wk = (Button) findViewById(R.id.btn_52wk);
-        Button btn12mth = (Button) findViewById(R.id.btn_12mth);
-        Button btnRss = (Button) findViewById(R.id.btn_rss);
+        Button btn7day = ( Button ) findViewById(R.id.btn_7day);
+        Button btn52wk = ( Button ) findViewById(R.id.btn_52wk);
+        Button btn12mth = ( Button ) findViewById(R.id.btn_12mth);
+        Button btnRss = ( Button ) findViewById(R.id.btn_rss);
         String symbol = GlobalWidgetData.getList().get(position).getSymbol();
 
         btn7day.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +104,7 @@ public class ChartActivity extends Activity {
                 ChartActivity.this.startActivity(activity);
             }
         });
+
         String intervalStr = intervalSwitcher(interval);
         Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
                 + symbol + "&apikey=" + alphavantagekey);
@@ -111,6 +112,14 @@ public class ChartActivity extends Activity {
         btnMACD.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 GlobalWidgetData.setInterval(5);
+                finish();
+                startActivity(getIntent());
+            }
+        });
+
+        btnRSI.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GlobalWidgetData.setInterval(4);
                 finish();
                 startActivity(getIntent());
             }
@@ -124,7 +133,7 @@ public class ChartActivity extends Activity {
             List<String> graphPrices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=" + graphFct + "&symbol="
                     + symbol + graphParam + "&series_type=close&apikey=" + alphavantagekey, interval);
 
-            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(graphPrices));
+            new ImageSnatcher(( ImageView ) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(graphPrices));
         } else {
             Log.i("urltext", "https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
                     + symbol + "&apikey=" + alphavantagekey);
@@ -133,7 +142,7 @@ public class ChartActivity extends Activity {
             List<String> prices = GlobalWidgetData.getValues("https://www.alphavantage.co/query?function=TIME_SERIES_" + intervalStr + "_ADJUSTED&symbol="
                     + symbol + "&apikey=" + alphavantagekey, interval);
 
-            new ImageSnatcher((ImageView) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
+            new ImageSnatcher(( ImageView ) findViewById(R.id.chart_img)).execute(GlobalWidgetData.constructImageUrl(prices));
         }
 
     }

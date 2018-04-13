@@ -1,4 +1,4 @@
-package nitezh.ministock.activities;
+package nitezh.ministock.ChartDataTesting;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,12 +50,12 @@ public class ChartActivityTest {
 
 
     private String buildRSIUrl(String symbol) {
-        String RSIurl = "https://www.alphavantage.co/query?function=RSI&symbol="+symbol+"&interval=daily&time_period=14&series_type=close&apikey=ZKD8M6L9CEQAK89H";
-        return  RSIurl;
+        String RSIurl = "https://www.alphavantage.co/query?function=RSI&symbol=" + symbol + "&interval=daily&time_period=14&series_type=close&apikey=ZKD8M6L9CEQAK89H";
+        return RSIurl;
     }
 
     private String buildMACDURL(String symbol) {
-        String MACDurl = "https://www.alphavantage.co/query?function=MACD&symbol="+symbol+"&interval=weekly&series_type=close&apikey=ZKD8M6L9CEQAK89H";
+        String MACDurl = "https://www.alphavantage.co/query?function=MACD&symbol=" + symbol + "&interval=weekly&series_type=close&apikey=ZKD8M6L9CEQAK89H";
         return MACDurl;
     }
 

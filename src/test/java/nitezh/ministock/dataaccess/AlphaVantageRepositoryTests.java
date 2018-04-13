@@ -3,6 +3,7 @@ package nitezh.ministock.dataaccess;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +40,7 @@ public class AlphaVantageRepositoryTests {
 
     @Test
     public void retrieveRegularStockValues() throws JSONException{
+        Assume.assumeTrue(System.getenv("CIRCLECI") == null);
         symbol = "GOOG";
         //test data retrieval for all time intervals
         for(String timeInterval : this.timeInterval) {

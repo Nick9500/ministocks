@@ -490,15 +490,10 @@ public class WidgetView {
     public void applyPendingChanges(int widgetId) {
         int widgetDisplay = this.getNextView(this.updateMode);
         this.clear();
-        List<String> importSymbols = myData.getImportSymbols();
         // Reset list. Otherwise duplicates the entries
         myStockList.clear();
 
         int lineNo = 0;
-        if (!importSymbols.isEmpty())
-        {
-            this.symbols = importSymbols;
-        }
 
         for (String symbol : this.symbols)
         {

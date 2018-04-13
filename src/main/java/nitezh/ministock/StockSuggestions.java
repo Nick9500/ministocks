@@ -48,7 +48,7 @@ class StockSuggestions {
     private static final Pattern PATTERN_RESPONSE = Pattern.compile("YAHOO\\.Finance\\.SymbolSuggest\\.ssCallback\\((\\{.*?\\})\\)");
     private static final String CRYPTO_BASE_URL = "https://api.coinmarketcap.com/v1/ticker/";
 
-    static List<Map<String, String>> getSuggestions(String query) {
+     static List<Map<String, String>> getSuggestions(String query) {
         final Pattern STOCK_REGEX = Pattern.compile("^" + query + "[A-Z0-9]*", Pattern.CASE_INSENSITIVE);
 
         List<Map<String, String>> suggestions = new ArrayList<>();

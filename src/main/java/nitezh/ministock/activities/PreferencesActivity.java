@@ -29,7 +29,6 @@ import android.app.SearchManager;
 import android.app.TimePickerDialog;
 
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,8 +42,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.provider.Settings;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.text.InputType;
 import android.view.View;
@@ -53,66 +50,39 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nitezh.ministock.DialogTools;
-import nitezh.ministock.PreferenceStorage;
-
 import nitezh.ministock.MimeSendTask;
-
 import nitezh.ministock.R;
-import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
-import nitezh.ministock.WidgetProvider;
 import nitezh.ministock.activities.widget.Bonobo_widget_service;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
-import nitezh.ministock.activities.widget.WidgetRow;
-import nitezh.ministock.activities.widget.WidgetView;
-import nitezh.ministock.domain.AndroidWidgetRepository;
-import nitezh.ministock.domain.PortfolioStock;
-import nitezh.ministock.domain.PortfolioStockRepository;
-import nitezh.ministock.domain.StockQuote;
-import nitezh.ministock.domain.StockQuoteRepository;
-import nitezh.ministock.domain.Widget;
-import nitezh.ministock.domain.WidgetRepository;
-import nitezh.ministock.utils.Cache;
 import nitezh.ministock.utils.DateTools;
-import nitezh.ministock.utils.StorageCache;
 import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
-import static nitezh.ministock.activities.GlobalWidgetData.myStockList;
 
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
+    public GlobalWidgetData myData = new GlobalWidgetData();
     // Constants
     private static final int STRING_TYPE = 0;
     private static final int LIST_TYPE = 1;
@@ -121,7 +91,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     public static int mAppWidgetId = 0;
     // Private
     private static boolean mPendingUpdate = false;
-    private static boolean importUpdate;
     private static String mSymbolSearchKey = "";
     private final String CHANGE_LOG = "";
 
@@ -133,10 +102,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private String mTimePickerKey = null;
     private int mHour = 0;
     private int mMinute = 0;
-
+    //usedforImport
     private  List<String> csvSymbols;
-
-    public GlobalWidgetData myData = new GlobalWidgetData();
 
     private boolean isValidEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
@@ -858,16 +825,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         super.onStop();
         // Update the widget when we quit the preferences, and if the dirty,
         // flag is true then do a web update, otherwise do a regular update
-        if(importUpdate)
-        {
-            importUpdate = false;
-            finish();
-        }
-        else{ pendingUpdate(); }
-    }
 
-    private void pendingUpdate()
-    {
         if (mPendingUpdate) {
             mPendingUpdate = false;
             WidgetProviderBase.updateWidgets(getApplicationContext(),
@@ -877,8 +835,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                     WidgetProviderBase.UpdateType.VIEW_NO_UPDATE);
         }
         finish();
-    }
 
+    }
 
     private void showHelpUsage() {
         String title = "Selecting widget views";
@@ -897,6 +855,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
         // Set up the input
         final EditText input = new EditText(this);
+        input.setId(R.id.emailFieldID);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
@@ -975,7 +934,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
     private List <String> openStocksFile()throws IOException  {
         List <String> symbols = new ArrayList<String>();
-
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv");
         if(file.exists()) {
             FileInputStream fis = new FileInputStream(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "stocks.csv"));
@@ -996,36 +954,25 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     }
 
     private void creatQuotesFromCSV(List<String> csvSymbols) {
+        String first;
         int i = 1;
-        myData.setImportSymbols(csvSymbols);
-        WidgetRepository widgetRepository = new AndroidWidgetRepository(this.getApplicationContext());
-        Storage storage = PreferenceStorage.getInstance(this.getApplicationContext());
-        StockQuoteRepository quoteRepository = new StockQuoteRepository(
-                PreferenceStorage.getInstance(this.getApplicationContext()), new StorageCache(storage),
-                widgetRepository);
-        HashMap<String, StockQuote> stockQuotes = quoteRepository.getLiveQuotes(csvSymbols);
-        String quotesTimeStamp = quoteRepository.getTimeStamp();
-        quoteRepository.saveQuotes(stockQuotes, quotesTimeStamp);
-        WidgetView wv = new WidgetView(getApplicationContext(), mAppWidgetId, WidgetProviderBase.UpdateType.VIEW_UPDATE, stockQuotes, quotesTimeStamp);
-        SharedPreferences preferences = getPreferenceScreen().getSharedPreferences();
-        myStockList.clear();
-        Editor editor = preferences.edit();
-        editor.clear();
-        mPendingUpdate = true;
-
-        for (HashMap.Entry<String,StockQuote> entry : stockQuotes.entrySet()) {
-           editor.putString(entry.getKey(), entry.getValue().getName());
-           editor.apply();
-           i++;
+            for(String s : csvSymbols){
+                first = s;
+                try{
+                    setPreference("Stock"+i,s , "");
+                    i++;
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    setPreference("Stock"+csvSymbols.size(), first, "");
+                }
         }
-        wv.applyPendingChanges(mAppWidgetId);
     }
 
     private void importStocks() throws IOException {
         RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
         csvSymbols = openStocksFile();
         creatQuotesFromCSV(csvSymbols);
-        importUpdate = true;
 
         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);

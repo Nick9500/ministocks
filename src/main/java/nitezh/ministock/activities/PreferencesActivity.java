@@ -86,6 +86,7 @@ import nitezh.ministock.PreferenceStorage;
 import nitezh.ministock.MimeSendTask;
 
 import nitezh.ministock.R;
+import nitezh.ministock.SaveFile;
 import nitezh.ministock.Storage;
 import nitezh.ministock.UserData;
 import nitezh.ministock.WidgetProvider;
@@ -900,48 +901,77 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        AlertDialog builder = new AlertDialog.Builder(this)
-                .setTitle("Enter Destination E-mail Address")
-                .setPositiveButton("Send", null)
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                .setView(input)
-                .create();
+        CharSequence colors[] = new CharSequence[] {"Save File On Device", "Send File to Email"};
 
-        builder.setOnShowListener(new DialogInterface.OnShowListener() {
+        AlertDialog.Builder fileOrEmailAlert = new AlertDialog.Builder(this);
+        fileOrEmailAlert.setTitle("Export Method");
+        fileOrEmailAlert.setItems(colors, new DialogInterface.OnClickListener() {
             @Override
-            public void onShow(final DialogInterface dialogInterface) {
-                Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String email = input.getText().toString();
-
-                        if (email.length() > 0 && isValidEmail(email)) {
-                            new MimeSendTask(PreferencesActivity.this, email).execute();
-                            dialogInterface.dismiss();
-                        } else {
-                            new AlertDialog.Builder(PreferencesActivity.this)
-                                    .setTitle("Verify Input")
-                                    .setMessage("Please enter a valid e-mail address format")
-                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 1)
+                {
+                    AlertDialog builder = new AlertDialog.Builder(PreferencesActivity.this)
+                            .setTitle("Enter Destination E-mail Address")
+                            .setPositiveButton("Send", null)
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
                                         }
                                     })
-                                    .show();
+                            .setView(input)
+                            .create();
+
+                    builder.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(final DialogInterface dialogInterface) {
+                            Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                            button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String email = input.getText().toString();
+
+                                    if (email.length() > 0 && isValidEmail(email)) {
+                                        new MimeSendTask(PreferencesActivity.this, email).execute();
+                                        dialogInterface.dismiss();
+                                    } else {
+                                        new AlertDialog.Builder(PreferencesActivity.this)
+                                                .setTitle("Verify Input")
+                                                .setMessage("Please enter a valid e-mail address format")
+                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                }
+                            });
                         }
-                    }
-                });
+                    });
+
+                    builder.show();
+                }
+                else{
+
+                    AlertDialog alertUserOfFileDialog = new AlertDialog.Builder(PreferencesActivity.this).create();
+                    alertUserOfFileDialog.setTitle("File Save");
+                    alertUserOfFileDialog.setMessage("File Has Been Saved in DataFolder.");
+                    alertUserOfFileDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    System.out.println("it works");
+                                    new SaveFile().execute();
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertUserOfFileDialog.show();
+                }
             }
         });
+        fileOrEmailAlert.show();
 
-        builder.show();
     }
 
     private void showChangeLog() {

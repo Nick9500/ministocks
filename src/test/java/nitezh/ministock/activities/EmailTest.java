@@ -123,14 +123,14 @@ public class EmailTest {
 
             while ((line = br.readLine()) != null) {
                 text.append(line);
-
             }
             br.close();
         }
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
-
+        assertNotNull(row.getSymbol());
+        assertNotNull(text.toString());
         assertEquals(row.getSymbol(),text.toString());
     }
 

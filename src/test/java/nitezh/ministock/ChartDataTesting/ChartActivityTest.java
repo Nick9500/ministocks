@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertFalse;
 public class ChartActivityTest {
 
     String symbol;
-    private String key = BuildConfig.AplhaVantageSecKey;
+    private String key = BuildConfig.AlphaVantageSecKey;
 
     @Test
     public void retrieveRSIJSONvalues() throws JSONException {

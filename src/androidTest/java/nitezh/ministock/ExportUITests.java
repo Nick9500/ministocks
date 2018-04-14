@@ -128,7 +128,7 @@ public class ExportUITests {
         setStock(0, Arrays.asList(KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_D)); // Stock: MMD
         mDevice.pressBack();
         clickExport();
-        String emailAddress = "ministocks34@gmail.com";
+        String emailAddress = BuildConfig.EmailSecID;
         setEmailAddress(emailAddress);
         sendEmail();
     }

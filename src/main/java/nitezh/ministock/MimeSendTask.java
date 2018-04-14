@@ -44,8 +44,7 @@ public class MimeSendTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         //Data Storage Directory
-        String path =
-                Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
+        String path = Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
         File folder = new File(path);
         folder.mkdirs();
 
@@ -88,14 +87,14 @@ public class MimeSendTask extends AsyncTask<Void, Void, Void> {
                 new javax.mail.Authenticator() {
                     //Authenticating the password
                     protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                        return new javax.mail.PasswordAuthentication("ministocks34@gmail.com", "ministocks123");
+                        return new javax.mail.PasswordAuthentication(BuildConfig.EmailSecID, BuildConfig.EmailSecPass);
                     }
                 });
         Log.d("EMAIL", toAddress);
         try {
             //Creating MimeMessage object
             MimeMessage mm = new MimeMessage(session);
-            String fromAddress = "ministocks34@gmail.com";
+            String fromAddress = BuildConfig.EmailSecID;
 
             //Setting sender address
             mm.setFrom(new InternetAddress(fromAddress));

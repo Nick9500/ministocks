@@ -59,7 +59,6 @@ import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -69,6 +68,9 @@ import java.util.regex.Pattern;
 import nitezh.ministock.DialogTools;
 import nitezh.ministock.MimeSendTask;
 import nitezh.ministock.R;
+
+import nitezh.ministock.SaveFile;
+
 import nitezh.ministock.UserData;
 import nitezh.ministock.activities.widget.Bonobo_widget_service;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
@@ -77,8 +79,6 @@ import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-
-
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
@@ -526,35 +526,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             }
         });
 
-        /*
-        // Hook the Backup portfolio option to the backup portfolio method
-        Preference backup_portfolio = findPreference("backup_portfolio");
-        backup_portfolio.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Storage storage = PreferenceStorage.getInstance(PreferencesActivity.this);
-                Cache cache = new StorageCache(storage);
-                WidgetRepository widgetRepository = new AndroidWidgetRepository(PreferencesActivity.this);
-                new PortfolioStockRepository(storage, cache, widgetRepository).backupPortfolio(PreferencesActivity.this);
-                return true;
-            }
-        });
-
-
-        // Hook the Restore portfolio option to the restore portfolio method
-        Preference restore_portfolio = findPreference("restore_portfolio");
-        restore_portfolio.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Storage storage = PreferenceStorage.getInstance(PreferencesActivity.this);
-                Cache cache = new StorageCache(storage);
-                WidgetRepository widgetRepository = new AndroidWidgetRepository(PreferencesActivity.this);
-                new PortfolioStockRepository(storage, cache, widgetRepository).restorePortfolio(PreferencesActivity.this);
-                return true;
-            }
-        });
-        */
-
         // Hook the Backup widget option to the backup widget method
         Preference backup_widget = findPreference("backup_widget");
         backup_widget.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -858,48 +829,77 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        AlertDialog builder = new AlertDialog.Builder(this)
-                .setTitle("Enter Destination E-mail Address")
-                .setPositiveButton("Send", null)
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                .setView(input)
-                .create();
+        CharSequence colors[] = new CharSequence[] {"Save File On Device", "Send File to Email"};
 
-        builder.setOnShowListener(new DialogInterface.OnShowListener() {
+        AlertDialog.Builder fileOrEmailAlert = new AlertDialog.Builder(this);
+        fileOrEmailAlert.setTitle("Export Method");
+        fileOrEmailAlert.setItems(colors, new DialogInterface.OnClickListener() {
             @Override
-            public void onShow(final DialogInterface dialogInterface) {
-                Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String email = input.getText().toString();
-
-                        if (email.length() > 0 && isValidEmail(email)) {
-                            new MimeSendTask(PreferencesActivity.this, email).execute();
-                            dialogInterface.dismiss();
-                        } else {
-                            new AlertDialog.Builder(PreferencesActivity.this)
-                                    .setTitle("Verify Input")
-                                    .setMessage("Please enter a valid e-mail address format")
-                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 1)
+                {
+                    AlertDialog builder = new AlertDialog.Builder(PreferencesActivity.this)
+                            .setTitle("Enter Destination E-mail Address")
+                            .setPositiveButton("Send", null)
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
                                         }
                                     })
-                                    .show();
+                            .setView(input)
+                            .create();
+
+                    builder.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(final DialogInterface dialogInterface) {
+                            Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                            button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String email = input.getText().toString();
+
+                                    if (email.length() > 0 && isValidEmail(email)) {
+                                        new MimeSendTask(PreferencesActivity.this, email).execute();
+                                        dialogInterface.dismiss();
+                                    } else {
+                                        new AlertDialog.Builder(PreferencesActivity.this)
+                                                .setTitle("Verify Input")
+                                                .setMessage("Please enter a valid e-mail address format")
+                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                }
+                            });
                         }
-                    }
-                });
+                    });
+
+                    builder.show();
+                }
+                else{
+
+                    AlertDialog alertUserOfFileDialog = new AlertDialog.Builder(PreferencesActivity.this).create();
+                    alertUserOfFileDialog.setTitle("File Save");
+                    alertUserOfFileDialog.setMessage("File Has Been Saved in DataFolder.");
+                    alertUserOfFileDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    System.out.println("it works");
+                                    new SaveFile().execute();
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertUserOfFileDialog.show();
+                }
             }
         });
+        fileOrEmailAlert.show();
 
-        builder.show();
     }
 
     private void showChangeLog() {
@@ -952,7 +952,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         return symbols;
     }
 
-    private void creatQuotesFromCSV(List<String> csvSymbols) {
+    private void createQuotesFromCSV(List<String> csvSymbols) {
         String first;
         int i = 1;
             for(String s : csvSymbols){
@@ -971,7 +971,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private void importStocks() throws IOException {
         RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
         csvSymbols = openStocksFile();
-        creatQuotesFromCSV(csvSymbols);
+        createQuotesFromCSV(csvSymbols);
 
         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);

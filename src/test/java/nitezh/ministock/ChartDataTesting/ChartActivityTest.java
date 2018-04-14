@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import nitezh.ministock.BuildConfig;
 import nitezh.ministock.utils.UrlDataTools;
 
 import static junit.framework.Assert.assertEquals;
@@ -13,7 +14,7 @@ import static junit.framework.Assert.assertFalse;
 public class ChartActivityTest {
 
     String symbol;
-
+    private String key = BuildConfig.AplhaVantageSecKey;
 
     @Test
     public void retrieveRSIJSONvalues() throws JSONException {
@@ -50,12 +51,12 @@ public class ChartActivityTest {
 
 
     private String buildRSIUrl(String symbol) {
-        String RSIurl = "https://www.alphavantage.co/query?function=RSI&symbol=" + symbol + "&interval=daily&time_period=14&series_type=close&apikey=ZKD8M6L9CEQAK89H";
+        String RSIurl = "https://www.alphavantage.co/query?function=RSI&symbol=" + symbol + "&interval=daily&time_period=14&series_type=close&apikey=" + key;
         return RSIurl;
     }
 
     private String buildMACDURL(String symbol) {
-        String MACDurl = "https://www.alphavantage.co/query?function=MACD&symbol=" + symbol + "&interval=weekly&series_type=close&apikey=ZKD8M6L9CEQAK89H";
+        String MACDurl = "https://www.alphavantage.co/query?function=MACD&symbol=" + symbol + "&interval=weekly&series_type=close&apikey=" + key;
         return MACDurl;
     }
 

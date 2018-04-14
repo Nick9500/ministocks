@@ -151,7 +151,7 @@ public class ExportUITests {
         removeStock(1);
         mDevice.pressBack();
         clickExport();
-        String emailAddress = "ministocks34@gmail.com";
+        String emailAddress = BuildConfig.EmailSecID;
         setEmailAddress(emailAddress);
         sendEmail();
     }

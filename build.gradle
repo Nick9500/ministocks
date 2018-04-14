@@ -22,9 +22,18 @@ android {
     }
 
     buildTypes {
+        debug{
+            buildConfigField 'String', 'EmailSecID', EmailID
+            buildConfigField 'String', 'EmailSecPass', EmailPass
+            buildConfigField 'String', 'AlphaVantageSecKey', AlphaVantageAPIKey
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'EmailSecID', EmailID
+            buildConfigField 'String', 'EmailSecPass', EmailPass
+            buildConfigField 'String', 'AlphaVantageSecKey', AlphaVantageAPIKey
         }
     }
 

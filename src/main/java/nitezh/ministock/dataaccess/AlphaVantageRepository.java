@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import nitezh.ministock.BuildConfig;
 import nitezh.ministock.domain.StockQuote;
 import nitezh.ministock.utils.Cache;
 import nitezh.ministock.utils.UrlDataTools;
@@ -31,7 +32,7 @@ import static android.net.wifi.WifiConfiguration.Status.strings;
 
 public class AlphaVantageRepository {
 
-    private static final String API_KEY = "ZKD8M6L9CEQAK89H";
+    private static final String API_KEY = BuildConfig.AlphaVantageSecKey;
     private String baseURL = "https://www.alphavantage.co/query?function=TIME_SERIES_";
     private String cryptoBaseURL = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_";
     private final FxChangeRepository fxChangeRepository;

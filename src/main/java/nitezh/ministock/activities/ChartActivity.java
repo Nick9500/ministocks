@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import nitezh.ministock.BuildConfig;
 import nitezh.ministock.R;
 import nitezh.ministock.activities.widget.WidgetProviderBase;
 
@@ -30,7 +32,7 @@ import static nitezh.ministock.activities.GlobalWidgetData.interval;
 public class ChartActivity extends Activity {
     // Public variables
     public static int mAppWidgetId = 0;
-    private final String alphavantagekey = "ZKD8M6L9CEQAK89H";
+    private final String alphavantagekey = BuildConfig.AlphaVantageSecKey;
     public String symbol = "";
 
     @Override

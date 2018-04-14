@@ -1,24 +1,17 @@
 package nitezh.ministock.activities;
 
-import android.os.Environment;
 import android.util.Log;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.robolectric.RuntimeEnvironment;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -28,14 +21,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import nitezh.ministock.activities.GlobalWidgetData;
+import nitezh.ministock.BuildConfig;
 import nitezh.ministock.activities.widget.WidgetRow;
-import nitezh.ministock.domain.AndroidWidgetRepository;
 import nitezh.ministock.domain.Widget;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 
 /**
@@ -59,13 +49,13 @@ public class EmailTest {
                 new javax.mail.Authenticator() {
                     //Authenticating the password
                     protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                        return new javax.mail.PasswordAuthentication("ministocks34@gmail.com", "ministocks123");
+                        return new javax.mail.PasswordAuthentication(BuildConfig.EmailSecID, BuildConfig.EmailSecPass);
                     }
                 });
         try {
             //Creating MimeMessage object
             MimeMessage mm = new MimeMessage(session);
-            String fromAddress = "ministocks34@gmail.com";
+            String fromAddress = BuildConfig.EmailSecID;
             String toAddress = "InvalidEmail";
             //Setting sender address
             mm.setFrom(new InternetAddress(fromAddress));
@@ -89,9 +79,6 @@ public class EmailTest {
     public void ReadFromFileSent() {
         //read from file, data can be stubbed
         //create a file and store it
-        /*String path = Environment.getExternalStorageDirectory() + File.separator + "DataFolder";
-        File folder = new File(path);
-        folder.mkdirs();*/
         File file = new File("data.txt");
 
         Widget widget = mock(Widget.class);

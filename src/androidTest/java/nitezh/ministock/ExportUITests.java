@@ -69,28 +69,6 @@ public class ExportUITests {
         return searchField;
     }
 
-    private void setStock(int index, String symbolToAdd) throws UiObjectNotFoundException {
-        UiObject searchField = selectStockView(index);
-        searchField.setText(symbolToAdd);
-        searchField.clickAndWaitForNewWindow(5000);
-        mDevice.pressDPadDown();
-        mDevice.pressDPadUp();
-        mDevice.pressEnter();
-
-    }
-
-    private void removeStock(int index) throws UiObjectNotFoundException {
-        UiObject searchField = selectStockView(index);
-        for (int i = 0; i < 8; i++) // 8 is max length of a stock, defined in stock suggestions
-            mDevice.pressKeyCode(KeyEvent.KEYCODE_DEL);
-        searchField.clickAndWaitForNewWindow(2000);
-        mDevice.pressKeyCode(KeyEvent.KEYCODE_SPACE);
-        mDevice.pressDPadDown();
-        mDevice.pressDPadDown();
-        mDevice.pressDPadDown();
-        mDevice.pressEnter();
-    }
-
     private void clickExport() throws UiObjectNotFoundException  {
         String export = "Export";
         UiScrollable preferencesListView = new UiScrollable(new UiSelector());

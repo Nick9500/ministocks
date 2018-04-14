@@ -82,7 +82,6 @@ import static android.content.SharedPreferences.OnSharedPreferenceChangeListener
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-    public GlobalWidgetData myData = new GlobalWidgetData();
     // Constants
     private static final int STRING_TYPE = 0;
     private static final int LIST_TYPE = 1;

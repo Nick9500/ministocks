@@ -120,19 +120,6 @@ public class SimpleUITesting {
         menuListItem.click();
     }
 
-    private void clickSettings() throws UiObjectNotFoundException  {
-        String settings = "Settings";
-        UiScrollable preferencesListView = new UiScrollable(new UiSelector());
-        preferencesListView.setMaxSearchSwipes(100);
-        preferencesListView.scrollTextIntoView(settings);
-        preferencesListView.waitForExists(3000);
-        UiObject settingsListItem =
-                preferencesListView.getChildByText(new UiSelector().className(android.widget.TextView.class.getName()),
-                        settings);
-        settingsListItem.click();
-    }
-
-
     private void selectPreferences() throws UiObjectNotFoundException {
         String preferencesResourceId = "nitezh.ministock:id/prefs_but";
         UiObject button = mDevice.findObject(new UiSelector().resourceId(preferencesResourceId));

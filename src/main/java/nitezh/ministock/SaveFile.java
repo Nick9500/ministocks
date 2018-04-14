@@ -32,7 +32,6 @@ public class SaveFile extends AsyncTask<Void, Void,Void> {
         File fileSavedOnDevice = new File(filePath, "stockData.csv");
 
         try {
-            final boolean newFile = fileSavedOnDevice.createNewFile();
             FileOutputStream fOut = new FileOutputStream(fileSavedOnDevice);
             OutputStreamWriter writeTOFile = new OutputStreamWriter(fOut);
 

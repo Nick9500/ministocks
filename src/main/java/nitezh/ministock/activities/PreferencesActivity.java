@@ -59,7 +59,6 @@ import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -71,7 +70,6 @@ import nitezh.ministock.MimeSendTask;
 import nitezh.ministock.R;
 
 import nitezh.ministock.SaveFile;
-import nitezh.ministock.Storage;
 
 import nitezh.ministock.UserData;
 import nitezh.ministock.activities.widget.Bonobo_widget_service;
@@ -81,8 +79,6 @@ import nitezh.ministock.utils.VersionTools;
 
 import static android.content.SharedPreferences.Editor;
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-
-
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
@@ -531,35 +527,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             }
         });
 
-        /*
-        // Hook the Backup portfolio option to the backup portfolio method
-        Preference backup_portfolio = findPreference("backup_portfolio");
-        backup_portfolio.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Storage storage = PreferenceStorage.getInstance(PreferencesActivity.this);
-                Cache cache = new StorageCache(storage);
-                WidgetRepository widgetRepository = new AndroidWidgetRepository(PreferencesActivity.this);
-                new PortfolioStockRepository(storage, cache, widgetRepository).backupPortfolio(PreferencesActivity.this);
-                return true;
-            }
-        });
-
-
-        // Hook the Restore portfolio option to the restore portfolio method
-        Preference restore_portfolio = findPreference("restore_portfolio");
-        restore_portfolio.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Storage storage = PreferenceStorage.getInstance(PreferencesActivity.this);
-                Cache cache = new StorageCache(storage);
-                WidgetRepository widgetRepository = new AndroidWidgetRepository(PreferencesActivity.this);
-                new PortfolioStockRepository(storage, cache, widgetRepository).restorePortfolio(PreferencesActivity.this);
-                return true;
-            }
-        });
-        */
-
         // Hook the Backup widget option to the backup widget method
         Preference backup_widget = findPreference("backup_widget");
         backup_widget.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -986,7 +953,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         return symbols;
     }
 
-    private void creatQuotesFromCSV(List<String> csvSymbols) {
+    private void createQuotesFromCSV(List<String> csvSymbols) {
         String first;
         int i = 1;
             for(String s : csvSymbols){
@@ -1005,7 +972,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
     private void importStocks() throws IOException {
         RemoteViews remoteViews= new RemoteViews(getApplicationContext().getPackageName(),R.layout.bonobo_widget_layout);
         csvSymbols = openStocksFile();
-        creatQuotesFromCSV(csvSymbols);
+        createQuotesFromCSV(csvSymbols);
 
         Intent intent = new Intent(getApplicationContext(), Bonobo_widget_service.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
